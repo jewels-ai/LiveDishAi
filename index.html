@@ -1,1009 +1,854 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>LiveDish AI — The Future of Restaurant Menus</title>
+<title>LiveDish AI — Premium AR Menu</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --gold:#C9A84C;--gold2:#E8C97A;--gold3:#F5E4B5;
-  --dark:#060810;--dark2:#0A0C18;--dark3:#0E1020;--mid:#141628;
-  --text:#F4F4FF;--muted:#8890B0;--faint:#3A3D58;
-  --border:rgba(201,168,76,0.15);--border2:rgba(201,168,76,0.08);
-  --rad:12px;--radlg:20px;
-  --glow:rgba(201,168,76,0.12);
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
-html{scroll-behavior:smooth;}
-body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden;}
 
-/* PARTICLES */
-#canvas-bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+:root{
+  --gold:#d4af37;
+  --gold2:#f0d77b;
+  --dark:#05060b;
+  --dark2:#0b0d16;
+  --text:#ffffff;
+  --muted:#8e95b3;
+}
 
-/* GRAIN OVERLAY */
-.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");}
+html{
+  scroll-behavior:smooth;
+}
 
-/* PROGRESS BAR */
-.prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:999;transition:width .1s;box-shadow:0 0 12px var(--gold);}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--dark);
+  color:white;
+  overflow-x:hidden;
+}
+
+/* BACKGROUND */
+
+.bg{
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at top left, rgba(212,175,55,.08), transparent 30%),
+  radial-gradient(circle at bottom right, rgba(212,175,55,.05), transparent 30%),
+  #05060b;
+  z-index:-3;
+}
+
+.grid{
+  position:fixed;
+  inset:0;
+  background-image:
+  linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(circle at center, black 20%, transparent 80%);
+  z-index:-2;
+}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:500;height:76px;padding:0 6%;display:flex;align-items:center;justify-content:space-between;background:rgba(6,8,16,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border2);}
-.nav-logo{display:flex;align-items:center;gap:12px;}
-.logo-mark{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(201,168,76,0.06);}
-.logo-name{font-size:18px;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
-.logo-name span{color:var(--gold);}
-.nav-links{display:flex;gap:36px;list-style:none;}
-.nav-links a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:0.3px;transition:color .2s;}
-.nav-links a:hover{color:var(--text);}
-.nav-pill{display:flex;align-items:center;gap:8px;}
-.nav-book{background:transparent;border:1px solid var(--border);color:var(--muted);padding:9px 20px;border-radius:50px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;}
-.nav-book:hover{border-color:var(--gold);color:var(--gold);}
-.nav-demo{background:var(--gold);color:var(--dark);padding:9px 22px;border-radius:50px;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .2s;letter-spacing:0.2px;}
-.nav-demo:hover{background:var(--gold2);transform:translateY(-1px);}
+
+nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:80px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 6%;
+  background:rgba(5,6,11,.75);
+  backdrop-filter:blur(20px);
+  z-index:1000;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.logo{
+  font-size:24px;
+  font-weight:800;
+  letter-spacing:-1px;
+}
+
+.logo span{
+  color:var(--gold);
+}
+
+.nav-links{
+  display:flex;
+  gap:40px;
+}
+
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  transition:.3s;
+}
+
+.nav-links a:hover{
+  color:white;
+}
+
+.nav-btn{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:black;
+  border:none;
+  padding:14px 28px;
+  border-radius:50px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.nav-btn:hover{
+  transform:translateY(-2px);
+}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:140px 6% 100px;position:relative;z-index:2;}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:50px;padding:6px 18px 6px 8px;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:36px;background:rgba(201,168,76,0.04);}
-.eyebrow-dot{width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;}
-.hero h1{font-size:clamp(48px,7.5vw,96px);font-weight:900;line-height:0.95;letter-spacing:-3px;max-width:1000px;margin:0 auto;}
-.h1-line{display:block;color:var(--text);}
-.h1-gold{display:block;color:transparent;-webkit-text-stroke:1.5px var(--gold);letter-spacing:-3px;}
-.h1-solid{display:block;color:var(--text);}
-.hero-sub{font-size:clamp(15px,1.8vw,18px);color:var(--muted);max-width:520px;margin:32px auto 0;line-height:1.85;font-weight:400;}
-.hero-cta{display:flex;gap:14px;margin-top:52px;flex-wrap:wrap;justify-content:center;}
-.cta-primary{background:var(--gold);color:var(--dark);padding:16px 36px;border-radius:50px;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .3s;letter-spacing:0.3px;box-shadow:0 0 40px rgba(201,168,76,0.2);}
-.cta-primary:hover{background:var(--gold2);transform:translateY(-3px);box-shadow:0 0 60px rgba(201,168,76,0.35);}
-.cta-secondary{background:transparent;color:var(--text);padding:16px 36px;border-radius:50px;font-size:15px;font-weight:500;border:1px solid var(--faint);cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:10px;}
-.cta-secondary:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);}
-.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.4;}
-.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease-in-out infinite;}
-@keyframes scrollPulse{0%,100%{opacity:0.4;transform:scaleY(1);}50%{opacity:1;transform:scaleY(1.1);}}
-.scroll-txt{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 
-/* MARQUEE STRIP */
-.marquee-wrap{position:relative;z-index:2;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);padding:18px 0;overflow:hidden;background:rgba(201,168,76,0.02);}
-.marquee-track{display:flex;gap:0;animation:marqueeSlide 25s linear infinite;width:max-content;}
-.marquee-item{display:flex;align-items:center;gap:10px;padding:0 40px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--border2);white-space:nowrap;}
-.marquee-item span{color:var(--gold);font-weight:700;}
-@keyframes marqueeSlide{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.hero{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:140px 6%;
+  position:relative;
+}
 
-/* METRICS SECTION */
-.metrics{padding:100px 6%;position:relative;z-index:2;}
-.metrics-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border2);border-radius:var(--radlg);overflow:hidden;border:1px solid var(--border2);}
-.metric-card{background:var(--dark2);padding:48px 32px;text-align:center;position:relative;overflow:hidden;transition:background .3s;}
-.metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s;}
-.metric-card:hover{background:var(--dark3);}
-.metric-card:hover::before{opacity:1;}
-.metric-val{font-size:52px;font-weight:900;letter-spacing:-2px;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums;}
-.metric-unit{font-size:22px;vertical-align:super;}
-.metric-lbl{font-size:13px;color:var(--muted);margin-top:10px;font-weight:400;line-height:1.5;}
-.metric-sub{font-size:11px;color:var(--faint);margin-top:4px;letter-spacing:0.5px;}
+.hero-content{
+  max-width:1100px;
+}
 
-/* SECTION COMMONS */
-section{padding:110px 6%;position:relative;z-index:2;}
-.section-label{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
-.section-label::before{content:'';width:20px;height:1px;background:var(--gold);}
-.section-h{font-size:clamp(32px,4vw,54px);font-weight:900;letter-spacing:-2px;line-height:1.05;color:var(--text);}
-.section-p{font-size:16px;color:var(--muted);margin-top:18px;line-height:1.9;max-width:520px;}
+.tag{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 18px;
+  border:1px solid rgba(212,175,55,.3);
+  border-radius:50px;
+  color:var(--gold);
+  margin-bottom:30px;
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  background:rgba(212,175,55,.05);
+  animation:fadeUp 1s ease;
+}
 
-/* DIVIDER */
-.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);position:relative;z-index:2;}
+.hero h1{
+  font-size:clamp(56px,9vw,120px);
+  line-height:.92;
+  font-weight:900;
+  letter-spacing:-4px;
+  animation:fadeUp 1s ease;
+}
 
-/* HOW IT WORKS */
-.how-sec{background:var(--dark2);}
-.timeline{margin-top:72px;display:flex;flex-direction:column;gap:0;position:relative;}
-.timeline::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--gold),var(--faint),transparent);}
-.tl-item{display:grid;grid-template-columns:56px 1fr;gap:40px;padding:0 0 64px;position:relative;opacity:0;transform:translateY(20px);transition:all .6s ease;}
-.tl-item.visible{opacity:1;transform:translateY(0);}
-.tl-dot{width:56px;height:56px;border-radius:50%;background:var(--dark3);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--gold);position:relative;z-index:1;flex-shrink:0;}
-.tl-content{padding-top:14px;}
-.tl-step{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
-.tl-h{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:10px;}
-.tl-p{font-size:15px;color:var(--muted);line-height:1.8;max-width:560px;}
-.tl-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
-.tl-tag{font-size:11px;padding:4px 12px;border-radius:50px;border:1px solid var(--border);color:var(--muted);background:rgba(201,168,76,0.03);}
+.hero h1 span{
+  color:transparent;
+  -webkit-text-stroke:2px var(--gold);
+}
 
-/* FEATURES BENTO */
-.bento{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:auto;gap:16px;margin-top:72px;}
-.bento-card{background:var(--dark2);border:1px solid var(--border2);border-radius:var(--radlg);padding:36px;position:relative;overflow:hidden;transition:all .4s;cursor:default;}
-.bento-card:hover{border-color:var(--border);background:var(--dark3);transform:translateY(-4px);}
-.bento-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(201,168,76,0.06) 0%,transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none;}
-.bento-card:hover::after{opacity:1;}
-.bc1{grid-column:span 7;}
-.bc2{grid-column:span 5;}
-.bc3{grid-column:span 4;}
-.bc4{grid-column:span 4;}
-.bc5{grid-column:span 4;}
-.bc6{grid-column:span 6;}
-.bc7{grid-column:span 6;}
-.b-ico{width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,0.08);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:22px;transition:transform .3s;}
-.bento-card:hover .b-ico{transform:scale(1.12) rotate(-6deg);}
-.b-h{font-size:19px;font-weight:800;letter-spacing:-0.5px;margin-bottom:10px;}
-.b-p{font-size:14px;color:var(--muted);line-height:1.75;}
-.b-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px;}
-.b-tag{font-size:11px;padding:3px 10px;border-radius:50px;border:1px solid var(--border2);color:var(--faint);}
-.b-metric{font-size:42px;font-weight:900;color:var(--gold);letter-spacing:-2px;margin:16px 0 6px;line-height:1;}
-.b-metric-lbl{font-size:13px;color:var(--muted);}
-.b-visual{margin-top:20px;height:5px;background:var(--faint);border-radius:50px;overflow:hidden;}
-.b-bar{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:barGrow 1.5s ease both;}
-@keyframes barGrow{from{width:0;}to{width:var(--w,70%);}}
+.hero p{
+  margin:30px auto;
+  max-width:700px;
+  color:var(--muted);
+  font-size:18px;
+  line-height:1.8;
+  animation:fadeUp 1.2s ease;
+}
 
-/* AR SECTION */
-.ar-section{background:var(--dark2);}
-.ar-split{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:64px;}
-.ar-visual{position:relative;display:flex;justify-content:center;padding:40px 0;}
+.hero-buttons{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+  margin-top:40px;
+}
 
-/* PHONE MOCKUP */
-.phone{width:220px;height:460px;border-radius:40px;background:var(--dark3);border:2px solid var(--border);position:relative;overflow:hidden;box-shadow:0 60px 120px rgba(0,0,0,0.8),0 0 0 1px rgba(201,168,76,0.1) inset;}
-.phone-bar{position:absolute;top:0;left:50%;transform:translateX(-50%);width:70px;height:22px;background:var(--dark);border-radius:0 0 14px 14px;z-index:2;}
-.p-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:36px 16px 20px;}
-.p-header{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.p-logo{font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1px;}
-.p-live{font-size:9px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:2px 8px;border-radius:50px;letter-spacing:1px;}
-.p-ar-frame{width:160px;height:160px;border-radius:20px;position:relative;background:rgba(201,168,76,0.03);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.p-corners span{position:absolute;width:16px;height:16px;border-color:var(--gold);border-style:solid;}
-.p-corners .tl{top:8px;left:8px;border-width:2px 0 0 2px;border-radius:3px 0 0 0;}
-.p-corners .tr{top:8px;right:8px;border-width:2px 2px 0 0;border-radius:0 3px 0 0;}
-.p-corners .bl{bottom:8px;left:8px;border-width:0 0 2px 2px;border-radius:0 0 0 3px;}
-.p-corners .br{bottom:8px;right:8px;border-width:0 2px 2px 0;border-radius:0 0 3px 0;}
-.p-dish{font-size:72px;line-height:1;animation:dishFloat 3s ease-in-out infinite;transition:opacity .3s;}
-@keyframes dishFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-12px) scale(1.06);}}
-.p-scan-line{position:absolute;left:12px;right:12px;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:scanV 2.4s ease-in-out infinite;}
-@keyframes scanV{0%,100%{top:12px;opacity:0;}15%,85%{opacity:0.8;}50%{top:148px;}}
-.p-info{width:100%;margin-top:14px;display:flex;flex-direction:column;gap:8px;}
-.p-dish-name{font-size:14px;font-weight:700;text-align:center;color:var(--text);}
-.p-pills{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;}
-.p-pill{font-size:9px;padding:3px 8px;border-radius:50px;background:rgba(201,168,76,0.08);border:1px solid var(--border);color:var(--gold);}
-.p-btn{margin-top:10px;width:100%;padding:10px;background:var(--gold);color:var(--dark);border:none;border-radius:50px;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:0.5px;}
-.phone-glow{position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);width:200px;height:100px;background:rgba(201,168,76,0.15);filter:blur(40px);border-radius:50%;pointer-events:none;}
-.phone-rings{position:absolute;inset:0;pointer-events:none;}
-.ring{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(201,168,76,0.1);transform:translate(-50%,-50%);animation:ringExpand 3s ease-out infinite;}
-.ring:nth-child(2){animation-delay:-1s;}
-.ring:nth-child(3){animation-delay:-2s;}
-@keyframes ringExpand{0%{width:220px;height:220px;opacity:.4;}100%{width:500px;height:500px;opacity:0;}}
-.ar-points{list-style:none;display:flex;flex-direction:column;gap:24px;}
-.ap{display:flex;gap:18px;align-items:flex-start;}
-.ap-n{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,0.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--gold);flex-shrink:0;margin-top:2px;}
-.ap-h{font-size:16px;font-weight:700;margin-bottom:5px;}
-.ap-p{font-size:14px;color:var(--muted);line-height:1.7;}
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:black;
+  padding:18px 36px;
+  border:none;
+  border-radius:60px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.35s;
+  font-size:15px;
+}
 
-/* INDUSTRIES */
-.ind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px;}
-.ind-card{background:var(--dark2);border:1px solid var(--border2);border-radius:var(--radlg);padding:36px 28px;transition:all .3s;position:relative;overflow:hidden;}
-.ind-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.04) 0%,transparent 60%);opacity:0;transition:opacity .3s;}
-.ind-card:hover{border-color:var(--border);transform:translateY(-4px);}
-.ind-card:hover::before{opacity:1;}
-.ind-ico{font-size:32px;margin-bottom:18px;display:block;}
-.ind-h{font-size:18px;font-weight:800;margin-bottom:8px;letter-spacing:-0.3px;}
-.ind-p{font-size:14px;color:var(--muted);line-height:1.7;}
-.ind-stat{margin-top:20px;font-size:24px;font-weight:900;color:var(--gold);letter-spacing:-1px;}
-.ind-stat-lbl{font-size:12px;color:var(--muted);margin-top:2px;}
+.btn-primary:hover{
+  transform:translateY(-4px);
+  box-shadow:0 20px 50px rgba(212,175,55,.3);
+}
 
-/* GLOBAL PRESENCE */
-.globe-sec{background:var(--dark2);}
-.globe-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:64px;}
-.globe-visual{position:relative;height:400px;display:flex;align-items:center;justify-content:center;}
-.globe-canvas{width:320px;height:320px;position:relative;}
-.globe-ring-outer{width:320px;height:320px;border-radius:50%;border:1px solid rgba(201,168,76,0.15);position:absolute;inset:0;animation:globeSpin 20s linear infinite;}
-.globe-ring-mid{width:240px;height:240px;border-radius:50%;border:1px dashed rgba(201,168,76,0.1);position:absolute;top:40px;left:40px;animation:globeSpin 15s linear infinite reverse;}
-.globe-center{width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.1) 0%,rgba(201,168,76,0.02) 100%);border:1px solid rgba(201,168,76,0.25);position:absolute;top:80px;left:80px;display:flex;align-items:center;justify-content:center;font-size:48px;}
-@keyframes globeSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-.globe-dot{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px rgba(201,168,76,0.6);animation:dotPulse 2s ease-in-out infinite;}
-.globe-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:rgba(201,168,76,0.2);animation:dotPulse 2s ease-in-out infinite;}
-@keyframes dotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.4);}}
-.globe-city{position:absolute;font-size:10px;color:var(--gold);font-weight:600;letter-spacing:0.5px;white-space:nowrap;}
-.globe-cities{display:flex;flex-direction:column;gap:18px;}
-.gc-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--border2);}
-.gc-row:last-child{border-bottom:none;}
-.gc-city{font-size:15px;font-weight:600;}
-.gc-rest{font-size:13px;color:var(--muted);}
-.gc-bar-wrap{width:120px;height:3px;background:var(--faint);border-radius:50px;overflow:hidden;}
-.gc-bar{height:100%;border-radius:50px;background:var(--gold);}
+.btn-secondary{
+  background:transparent;
+  color:white;
+  border:1px solid rgba(255,255,255,.15);
+  padding:18px 36px;
+  border-radius:60px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.35s;
+}
 
-/* TESTIMONIALS */
-.test-sec{background:var(--dark);}
-.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px;}
-.test-card{background:var(--dark2);border:1px solid var(--border2);border-radius:var(--radlg);padding:32px;transition:all .3s;position:relative;}
-.test-card:hover{border-color:var(--border);transform:translateY(-3px);}
-.test-quote{font-size:32px;color:var(--gold);line-height:1;margin-bottom:16px;opacity:.4;}
-.test-text{font-size:15px;color:#9DA8C8;line-height:1.8;font-weight:400;margin-bottom:24px;}
-.test-divider{width:32px;height:1px;background:var(--gold);margin-bottom:20px;opacity:.4;}
-.test-author{display:flex;align-items:center;gap:14px;}
-.test-av{width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--gold);}
-.test-name{font-size:14px;font-weight:700;color:var(--text);}
-.test-role{font-size:12px;color:var(--muted);margin-top:2px;}
-.stars{display:flex;gap:2px;margin-bottom:16px;}
-.star{width:12px;height:12px;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);background:var(--gold);}
+.btn-secondary:hover{
+  border-color:var(--gold);
+  color:var(--gold);
+}
 
-/* PRICING */
-.pricing-sec{background:var(--dark2);}
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px;}
-.price-card{background:var(--dark3);border:1px solid var(--border2);border-radius:var(--radlg);padding:40px;position:relative;transition:all .3s;}
-.price-card.featured{border-color:var(--gold);background:linear-gradient(160deg,rgba(201,168,76,0.04) 0%,var(--dark3) 60%);}
-.price-card:hover{transform:translateY(-4px);}
-.price-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--dark);font-size:11px;font-weight:800;padding:5px 16px;border-radius:50px;letter-spacing:1px;white-space:nowrap;}
-.price-tier{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--muted);margin-bottom:14px;}
-.price-amount{font-size:48px;font-weight:900;letter-spacing:-2px;color:var(--text);line-height:1;}
-.price-curr{font-size:20px;vertical-align:super;color:var(--gold);}
-.price-per{font-size:14px;font-weight:400;color:var(--muted);}
-.price-desc{font-size:14px;color:var(--muted);margin:14px 0 28px;line-height:1.7;}
-.price-feats{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:32px;}
-.price-feats li{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--muted);}
-.feat-check{width:16px;height:16px;border-radius:50%;background:rgba(201,168,76,0.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--gold);flex-shrink:0;}
-.price-btn{width:100%;padding:14px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;transition:all .3s;letter-spacing:0.3px;}
-.price-btn.outline{background:transparent;border:1px solid var(--border);color:var(--text);}
-.price-btn.outline:hover{border-color:var(--gold);color:var(--gold);}
-.price-btn.solid{background:var(--gold);border:none;color:var(--dark);}
-.price-btn.solid:hover{background:var(--gold2);box-shadow:0 8px 30px rgba(201,168,76,0.3);}
+/* FLOATING PHONE */
 
-/* FAQ */
-.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:64px;}
-.faq-item{background:var(--dark2);border:1px solid var(--border2);border-radius:var(--rad);padding:28px;transition:all .3s;cursor:pointer;}
-.faq-item:hover{border-color:var(--border);}
-.faq-q{font-size:15px;font-weight:700;margin-bottom:12px;color:var(--text);}
-.faq-a{font-size:14px;color:var(--muted);line-height:1.75;}
+.phone-section{
+  padding:120px 6%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
 
-/* CTA FINAL */
-.final-cta{text-align:center;padding:120px 6%;}
-.final-box{max-width:860px;margin:0 auto;position:relative;}
-.final-bg-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(100px,15vw,180px);font-weight:900;color:rgba(201,168,76,0.03);letter-spacing:-10px;white-space:nowrap;pointer-events:none;z-index:0;}
-.final-content{position:relative;z-index:1;}
-.final-h{font-size:clamp(36px,5vw,64px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:20px;}
-.final-p{font-size:17px;color:var(--muted);max-width:480px;margin:0 auto 44px;line-height:1.8;}
-.final-input-row{display:flex;gap:10px;max-width:480px;margin:0 auto;flex-wrap:wrap;}
-.final-inp{flex:1;padding:15px 22px;background:var(--dark2);border:1px solid var(--border);border-radius:50px;color:var(--text);font-size:14px;outline:none;min-width:200px;transition:border-color .2s;}
-.final-inp:focus{border-color:var(--gold);}
-.final-inp::placeholder{color:var(--faint);}
-.trust-logos{display:flex;align-items:center;justify-content:center;gap:32px;margin-top:56px;flex-wrap:wrap;}
-.trust-logo{font-size:11px;color:var(--faint);font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:8px 20px;border-radius:50px;border:1px solid var(--border2);}
+.phone-wrap{
+  position:relative;
+}
+
+.phone-rings span{
+  position:absolute;
+  border:1px solid rgba(212,175,55,.15);
+  border-radius:50%;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  animation:ring 4s infinite;
+}
+
+.phone-rings span:nth-child(1){
+  width:260px;
+  height:260px;
+}
+
+.phone-rings span:nth-child(2){
+  width:420px;
+  height:420px;
+  animation-delay:1s;
+}
+
+.phone-rings span:nth-child(3){
+  width:580px;
+  height:580px;
+  animation-delay:2s;
+}
+
+.phone{
+  width:320px;
+  height:650px;
+  border-radius:50px;
+  border:2px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg,#0c0f1d,#090b14);
+  position:relative;
+  overflow:hidden;
+  box-shadow:
+  0 40px 120px rgba(0,0,0,.8),
+  inset 0 0 0 1px rgba(255,255,255,.04);
+}
+
+.notch{
+  width:120px;
+  height:28px;
+  background:black;
+  border-radius:0 0 20px 20px;
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+.phone-content{
+  padding:34px 24px;
+}
+
+.top-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+.live{
+  border:1px solid rgba(212,175,55,.3);
+  color:var(--gold);
+  padding:5px 14px;
+  border-radius:40px;
+  font-size:12px;
+  background:rgba(212,175,55,.08);
+}
+
+.scan-box{
+  height:280px;
+  border-radius:28px;
+  border:1px solid rgba(212,175,55,.18);
+  background:rgba(255,255,255,.02);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.corner{
+  position:absolute;
+  width:28px;
+  height:28px;
+  border-color:var(--gold);
+  border-style:solid;
+}
+
+.tl{
+  top:18px;
+  left:18px;
+  border-width:3px 0 0 3px;
+}
+
+.tr{
+  top:18px;
+  right:18px;
+  border-width:3px 3px 0 0;
+}
+
+.bl{
+  bottom:18px;
+  left:18px;
+  border-width:0 0 3px 3px;
+}
+
+.br{
+  bottom:18px;
+  right:18px;
+  border-width:0 3px 3px 0;
+}
+
+.scan-line{
+  position:absolute;
+  width:90%;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  top:0;
+  left:5%;
+  box-shadow:0 0 20px var(--gold);
+  animation:scan 2.5s infinite ease-in-out;
+}
+
+.dish{
+  font-size:110px;
+  animation:floatDish 3s ease-in-out infinite;
+  filter:drop-shadow(0 20px 40px rgba(212,175,55,.2));
+}
+
+.food-name{
+  text-align:center;
+  margin-top:30px;
+  font-size:34px;
+  font-weight:800;
+}
+
+.food-tags{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:20px;
+}
+
+.food-tags span{
+  padding:8px 14px;
+  border-radius:50px;
+  border:1px solid rgba(212,175,55,.2);
+  background:rgba(212,175,55,.05);
+  color:var(--gold2);
+  font-size:12px;
+}
+
+.order-btn{
+  width:100%;
+  margin-top:30px;
+  padding:20px;
+  border:none;
+  border-radius:60px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:black;
+  font-weight:800;
+  font-size:20px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.order-btn:hover{
+  transform:scale(1.02);
+}
+
+/* FEATURES */
+
+.features{
+  padding:140px 6%;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:80px;
+}
+
+.section-title h2{
+  font-size:clamp(42px,6vw,72px);
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-3px;
+}
+
+.section-title p{
+  color:var(--muted);
+  max-width:700px;
+  margin:20px auto 0;
+  line-height:1.8;
+}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:24px;
+}
+
+.feature-card{
+  background:linear-gradient(180deg,#0c0f1c,#090b14);
+  border:1px solid rgba(255,255,255,.05);
+  padding:40px;
+  border-radius:30px;
+  transition:.4s;
+  position:relative;
+  overflow:hidden;
+}
+
+.feature-card:hover{
+  transform:translateY(-10px);
+  border-color:rgba(212,175,55,.3);
+  box-shadow:0 30px 60px rgba(0,0,0,.4);
+}
+
+.feature-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at top right, rgba(212,175,55,.08), transparent 40%);
+}
+
+.feature-icon{
+  width:70px;
+  height:70px;
+  border-radius:20px;
+  background:rgba(212,175,55,.08);
+  border:1px solid rgba(212,175,55,.2);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  margin-bottom:24px;
+}
+
+.feature-card h3{
+  font-size:24px;
+  margin-bottom:14px;
+}
+
+.feature-card p{
+  color:var(--muted);
+  line-height:1.8;
+}
+
+/* CTA */
+
+.cta{
+  padding:140px 6%;
+  text-align:center;
+}
+
+.cta-box{
+  background:linear-gradient(180deg,#0c0f1d,#090b14);
+  border:1px solid rgba(212,175,55,.15);
+  padding:100px 40px;
+  border-radius:40px;
+  position:relative;
+  overflow:hidden;
+}
+
+.cta-box::before{
+  content:'AR';
+  position:absolute;
+  font-size:240px;
+  font-weight:900;
+  color:rgba(212,175,55,.03);
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+.cta h2{
+  position:relative;
+  z-index:2;
+  font-size:clamp(40px,6vw,72px);
+  line-height:1;
+  letter-spacing:-3px;
+}
+
+.cta p{
+  position:relative;
+  z-index:2;
+  max-width:700px;
+  margin:30px auto;
+  color:var(--muted);
+  line-height:1.8;
+}
+
+.cta .btn-primary{
+  position:relative;
+  z-index:2;
+}
 
 /* FOOTER */
-footer{border-top:1px solid var(--border2);padding:72px 6% 40px;position:relative;z-index:2;}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:56px;}
-.foot-brand p{font-size:14px;color:var(--muted);margin:14px 0 0;line-height:1.8;max-width:260px;}
-.foot-brand-name{font-size:20px;font-weight:800;color:var(--text);}
-.foot-brand-name span{color:var(--gold);}
-.social-links{display:flex;gap:8px;margin-top:20px;}
-.soc{width:34px;height:34px;border-radius:8px;background:rgba(201,168,76,0.04);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--muted);}
-.soc:hover{border-color:var(--gold);color:var(--gold);}
-.foot-col h5{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
-.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
-.foot-col a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .2s;}
-.foot-col a:hover{color:var(--gold);}
-.foot-bottom{border-top:1px solid var(--border2);padding-top:28px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--faint);flex-wrap:wrap;gap:12px;}
-.foot-bottom a{color:var(--faint);text-decoration:none;}
-.foot-bottom a:hover{color:var(--gold);}
+
+footer{
+  padding:60px 6%;
+  text-align:center;
+  color:var(--muted);
+  border-top:1px solid rgba(255,255,255,.05);
+}
 
 /* ANIMATIONS */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
-.reveal.visible{opacity:1;transform:translateY(0);}
-.reveal-l{opacity:0;transform:translateX(-24px);transition:opacity .7s ease,transform .7s ease;}
-.reveal-l.visible{opacity:1;transform:translateX(0);}
-.reveal-r{opacity:0;transform:translateX(24px);transition:opacity .7s ease,transform .7s ease;}
-.reveal-r.visible{opacity:1;transform:translateX(0);}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+@keyframes floatDish{
+  0%,100%{
+    transform:translateY(0px) rotate(0deg);
+  }
+  50%{
+    transform:translateY(-14px) rotate(5deg);
+  }
+}
+
+@keyframes scan{
+  0%{
+    top:10px;
+    opacity:0;
+  }
+  20%{
+    opacity:1;
+  }
+  80%{
+    opacity:1;
+  }
+  100%{
+    top:250px;
+    opacity:0;
+  }
+}
+
+@keyframes ring{
+  0%{
+    transform:translate(-50%,-50%) scale(.8);
+    opacity:.5;
+  }
+  100%{
+    transform:translate(-50%,-50%) scale(1.3);
+    opacity:0;
+  }
+}
+
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(30px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
 
 /* RESPONSIVE */
-@media(max-width:960px){
-  .metrics-inner{grid-template-columns:repeat(2,1fr);}
-  .bento{grid-template-columns:1fr;}
-  .bc1,.bc2,.bc3,.bc4,.bc5,.bc6,.bc7{grid-column:span 1;}
-  .ar-split,.globe-grid,.footer-grid{grid-template-columns:1fr;}
-  .ind-grid,.test-grid,.price-grid,.faq-grid{grid-template-columns:1fr;}
-  .nav-links{display:none;}
-  .globe-visual{height:260px;}
+
+@media(max-width:768px){
+
+  .nav-links{
+    display:none;
+  }
+
+  .hero h1{
+    letter-spacing:-2px;
+  }
+
+  .phone{
+    width:280px;
+    height:590px;
+  }
+
+  .food-name{
+    font-size:28px;
+  }
+
 }
-@media(max-width:600px){
-  .metrics-inner{grid-template-columns:1fr;}
-  .final-input-row{flex-direction:column;}
-}
+
 </style>
 </head>
+
 <body>
 
-<canvas id="canvas-bg"></canvas>
-<div class="grain"></div>
-<div class="prog" id="prog"></div>
+<div class="bg"></div>
+<div class="grid"></div>
 
 <!-- NAV -->
+
 <nav>
-  <div class="nav-logo">
-    <div class="logo-mark">🍽</div>
-    <span class="logo-name">Live<span>Dish</span> AI</span>
+  <div class="logo">
+    Live<span>Dish</span> AI
   </div>
-  <ul class="nav-links">
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#industries">Industries</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#global">Global</a></li>
-  </ul>
-  <div class="nav-pill">
-    <button class="nav-book">Book a Call</button>
-    <button class="nav-demo">Get Free Demo →</button>
+
+  <div class="nav-links">
+    <a href="#">Features</a>
+    <a href="#">AR Experience</a>
+    <a href="#">Pricing</a>
+    <a href="#">Contact</a>
   </div>
+
+  <button class="nav-btn">
+    Book Demo
+  </button>
 </nav>
 
 <!-- HERO -->
+
 <section class="hero">
-  <div class="hero-eyebrow">
-    <div class="eyebrow-dot">✦</div>
-    The Future of Restaurant Menus
+
+  <div class="hero-content">
+
+    <div class="tag">
+      ✦ THE FUTURE OF RESTAURANT MENUS
+    </div>
+
+    <h1>
+      Menus That <br>
+      <span>Come Alive</span><br>
+      in Augmented Reality
+    </h1>
+
+    <p>
+      LiveDish AI transforms every menu into an immersive AR dining experience.
+      Guests scan, explore, and order photorealistic dishes directly from their table.
+    </p>
+
+    <div class="hero-buttons">
+      <button class="btn-primary">
+        Start Free Demo →
+      </button>
+
+      <button class="btn-secondary">
+        Watch Experience
+      </button>
+    </div>
+
   </div>
-  <h1>
-    <span class="h1-line">Menus That</span>
-    <span class="h1-gold">Come Alive</span>
-    <span class="h1-solid">in Augmented Reality</span>
-  </h1>
-  <p class="hero-sub">LiveDish AI transforms every dish into a photorealistic 3D experience. Guests see, smell (almost), and desire — before they ever order.</p>
-  <div class="hero-cta">
-    <button class="cta-primary">Start 30-Day Free Trial →</button>
-    <button class="cta-secondary">▶ &nbsp;Watch 90s Demo</button>
-  </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    <span class="scroll-txt">Scroll to explore</span>
-  </div>
+
 </section>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track" id="marquee">
-    <div class="marquee-item">WebAR Technology <span>✦</span></div>
-    <div class="marquee-item">No App Required <span>✦</span></div>
-    <div class="marquee-item">500+ Restaurants <span>✦</span></div>
-    <div class="marquee-item">48-Hour Setup <span>✦</span></div>
-    <div class="marquee-item">25+ Languages <span>✦</span></div>
-    <div class="marquee-item">AI Upsell Engine <span>✦</span></div>
-    <div class="marquee-item">3× Order Uplift <span>✦</span></div>
-    <div class="marquee-item">Real-Time Analytics <span>✦</span></div>
-    <div class="marquee-item">POS Integration <span>✦</span></div>
-    <div class="marquee-item">Enterprise Ready <span>✦</span></div>
-    <div class="marquee-item">WebAR Technology <span>✦</span></div>
-    <div class="marquee-item">No App Required <span>✦</span></div>
-    <div class="marquee-item">500+ Restaurants <span>✦</span></div>
-    <div class="marquee-item">48-Hour Setup <span>✦</span></div>
-    <div class="marquee-item">25+ Languages <span>✦</span></div>
-    <div class="marquee-item">AI Upsell Engine <span>✦</span></div>
-    <div class="marquee-item">3× Order Uplift <span>✦</span></div>
-    <div class="marquee-item">Real-Time Analytics <span>✦</span></div>
-    <div class="marquee-item">POS Integration <span>✦</span></div>
-    <div class="marquee-item">Enterprise Ready <span>✦</span></div>
-  </div>
-</div>
+<!-- PHONE -->
 
-<!-- METRICS -->
-<div class="metrics">
-  <div class="metrics-inner reveal">
-    <div class="metric-card">
-      <div class="metric-val" data-target="3" data-suffix="×"><span class="metric-unit"></span>0×</div>
-      <div class="metric-lbl">Average order volume increase</div>
-      <div class="metric-sub">Measured over first 90 days</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-val" data-target="42" data-suffix="%">0%</div>
-      <div class="metric-lbl">Upsell revenue uplift</div>
-      <div class="metric-sub">From AI recommendation engine</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-val" data-target="500" data-suffix="+">0+</div>
-      <div class="metric-lbl">Restaurants live globally</div>
-      <div class="metric-sub">Across 14 countries</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-val" data-target="4.9" data-suffix="★">0★</div>
-      <div class="metric-lbl">Average guest satisfaction</div>
-      <div class="metric-sub">Across 80,000+ reviews</div>
-    </div>
-  </div>
-</div>
+<section class="phone-section">
 
-<div class="divider"></div>
+  <div class="phone-wrap">
 
-<!-- HOW IT WORKS -->
-<section class="how-sec" id="how">
-  <div class="section-label">How It Works</div>
-  <div class="section-h">Live in under 48 hours.<br>Zero technical skill required.</div>
-  <p class="section-p">Our team handles every step — from building your 3D model library to going live. You focus on the food.</p>
-  <div class="timeline">
-    <div class="tl-item reveal">
-      <div class="tl-dot">01</div>
-      <div class="tl-content">
-        <div class="tl-step">Step 01</div>
-        <div class="tl-h">Submit Your Menu & Photos</div>
-        <div class="tl-p">Share your dish names, descriptions, and photography through our onboarding portal. Our AI pipeline immediately begins analysing composition, colour, and texture data to prepare each 3D model.</div>
-        <div class="tl-tags"><span class="tl-tag">Menu Upload</span><span class="tl-tag">Dish Photography</span><span class="tl-tag">AI Analysis</span></div>
-      </div>
+    <div class="phone-rings">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
-    <div class="tl-item reveal" style="transition-delay:.1s">
-      <div class="tl-dot">02</div>
-      <div class="tl-content">
-        <div class="tl-step">Step 02</div>
-        <div class="tl-h">We Build Photorealistic 3D Models</div>
-        <div class="tl-p">Our team of 3D artists, powered by AI tooling, constructs true-to-life dish models that capture exact portioning, colour accuracy, garnish details, and surface texture. Delivered in 48 hours.</div>
-        <div class="tl-tags"><span class="tl-tag">48hr Delivery</span><span class="tl-tag">PBR Materials</span><span class="tl-tag">True-to-Life Scale</span><span class="tl-tag">Quality Review</span></div>
-      </div>
-    </div>
-    <div class="tl-item reveal" style="transition-delay:.2s">
-      <div class="tl-dot">03</div>
-      <div class="tl-content">
-        <div class="tl-step">Step 03</div>
-        <div class="tl-h">Deploy Your Branded AR Menu</div>
-        <div class="tl-p">Your fully customised AR experience goes live instantly — branded to your restaurant identity, in your language of choice. Guests access it by scanning a QR code at their table. No app download. No friction.</div>
-        <div class="tl-tags"><span class="tl-tag">QR Deployment</span><span class="tl-tag">Zero App Friction</span><span class="tl-tag">Custom Branding</span><span class="tl-tag">Multi-language</span></div>
-      </div>
-    </div>
-    <div class="tl-item reveal" style="transition-delay:.3s">
-      <div class="tl-dot">04</div>
-      <div class="tl-content">
-        <div class="tl-step">Step 04</div>
-        <div class="tl-h">Track, Optimise & Grow</div>
-        <div class="tl-p">Your analytics dashboard surfaces which dishes attract the most engagement, what time drives peak exploration, and which items convert at the highest rate. Our AI engine automatically refines upsell recommendations from this data.</div>
-        <div class="tl-tags"><span class="tl-tag">Real-Time Analytics</span><span class="tl-tag">AI Optimisation</span><span class="tl-tag">Revenue Insights</span></div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<div class="divider"></div>
+    <div class="phone">
 
-<!-- FEATURES BENTO -->
-<section id="features">
-  <div class="section-label">Platform Features</div>
-  <div class="section-h">Everything a world-class<br>restaurant demands.</div>
-  <div class="bento">
-    <div class="bento-card bc1 reveal">
-      <div class="b-ico">🥽</div>
-      <div class="b-h">Real-Time WebAR — No App Needed</div>
-      <div class="b-p">Guests point their phone at the table and photorealistic 3D dishes appear at true life scale in their real environment. Built on WebGL and WebXR, it works instantly in Safari, Chrome, and any modern browser — iOS and Android. No download, no friction, just awe.</div>
-      <div class="b-tags"><span class="b-tag">WebXR</span><span class="b-tag">WebGL</span><span class="b-tag">iOS & Android</span><span class="b-tag">No Installation</span><span class="b-tag">True-Scale 3D</span></div>
-    </div>
-    <div class="bento-card bc2 reveal" style="transition-delay:.1s">
-      <div class="b-ico">🤖</div>
-      <div class="b-h">AI Upsell Engine</div>
-      <div class="b-p">Embedded AI surfaces recommendations based on dietary profile, browsing pattern, time of day, and table size — automatically increasing average check value.</div>
-      <div class="b-metric">+42%</div>
-      <div class="b-metric-lbl">Avg. upsell revenue increase</div>
-      <div class="b-visual"><div class="b-bar" style="--w:72%"></div></div>
-    </div>
-    <div class="bento-card bc3 reveal">
-      <div class="b-ico">🌍</div>
-      <div class="b-h">25+ Languages</div>
-      <div class="b-p">Auto-translate your entire menu in one click. Perfect for luxury hotels, airports, and international venues.</div>
-    </div>
-    <div class="bento-card bc4 reveal" style="transition-delay:.1s">
-      <div class="b-ico">⚡</div>
-      <div class="b-h">Live Menu Management</div>
-      <div class="b-p">Update prices, add specials, or flag sold-out items in seconds from your dashboard. Changes are live instantly.</div>
-    </div>
-    <div class="bento-card bc5 reveal" style="transition-delay:.2s">
-      <div class="b-ico">🔒</div>
-      <div class="b-h">Enterprise Security</div>
-      <div class="b-p">SOC 2 Type II compliant. All data encrypted at rest and in transit. White-label SSO available.</div>
-    </div>
-    <div class="bento-card bc6 reveal">
-      <div class="b-ico">📊</div>
-      <div class="b-h">Deep Guest Analytics</div>
-      <div class="b-p">Track dish views, dwell time, exploration patterns, combo tendencies, and order conversion — per dish, per table, per hour. Export to BI tools. Integrate with your POS for closed-loop revenue attribution.</div>
-      <div class="b-tags"><span class="b-tag">Real-Time Dashboard</span><span class="b-tag">POS Integration</span><span class="b-tag">Data Export</span></div>
-    </div>
-    <div class="bento-card bc7 reveal" style="transition-delay:.1s">
-      <div class="b-ico">🔗</div>
-      <div class="b-h">360° Integrations</div>
-      <div class="b-p">Connect with your existing tech stack out of the box. LiveDish AI plugs into major POS systems, reservation platforms, loyalty programmes, and kitchen display systems — all via a single REST API.</div>
-      <div class="b-tags"><span class="b-tag">POS</span><span class="b-tag">Resy</span><span class="b-tag">OpenTable</span><span class="b-tag">Loyalt Engine</span><span class="b-tag">KDS</span><span class="b-tag">REST API</span></div>
-    </div>
-  </div>
-</section>
+      <div class="notch"></div>
 
-<div class="divider"></div>
+      <div class="phone-content">
 
-<!-- AR SECTION -->
-<section class="ar-section" id="ar">
-  <div class="ar-split">
-    <div class="ar-visual reveal-l">
-      <div class="phone-rings">
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-      </div>
-      <div class="phone">
-        <div class="phone-bar"></div>
-        <div class="p-screen">
-          <div class="p-header">
-            <span class="p-logo">LIVEDISH AR</span>
-            <span class="p-live">● LIVE</span>
-          </div>
-          <div class="p-ar-frame">
-            <div class="p-corners">
-              <span class="tl"></span><span class="tr"></span>
-              <span class="bl"></span><span class="br"></span>
-            </div>
-            <div class="p-scan-line"></div>
-            <div class="p-dish" id="p-dish">🍛</div>
-          </div>
-          <div class="p-info">
-            <div class="p-dish-name" id="p-name">Lamb Rogan Josh</div>
-            <div class="p-pills">
-              <span class="p-pill">🌿 Halal</span>
-              <span class="p-pill">🔥 820 kcal</span>
-              <span class="p-pill">⭐ 4.9</span>
-              <span class="p-pill">🚫 Gluten-free</span>
-            </div>
-            <button class="p-btn">Add to Order — ₹680</button>
-          </div>
+        <div class="top-row">
+          <h3 style="color:var(--gold)">LIVEDISH AR</h3>
+          <div class="live">● LIVE</div>
         </div>
-      </div>
-      <div class="phone-glow"></div>
-    </div>
-    <div class="reveal-r">
-      <div class="section-label">AR Experience</div>
-      <div class="section-h">Dishes that exist before they arrive.</div>
-      <p class="section-p">Guests don't imagine the food — they see it. Life-scale, photorealistic, inspectable from every angle. That clarity eliminates ordering hesitation and dramatically increases high-margin dish selection.</p>
-      <ul class="ar-points" style="margin-top:36px;">
-        <li class="ap">
-          <div class="ap-n">01</div>
-          <div>
-            <div class="ap-h">Accurate Portion & Plating</div>
-            <div class="ap-p">Every model is built to true portion size, with exact plating, garnish, and sauce accuracy — so the dish arrives exactly as imagined.</div>
+
+        <div class="scan-box">
+
+          <div class="corner tl"></div>
+          <div class="corner tr"></div>
+          <div class="corner bl"></div>
+          <div class="corner br"></div>
+
+          <div class="scan-line"></div>
+
+          <div class="dish" id="dish">
+            🍣
           </div>
-        </li>
-        <li class="ap">
-          <div class="ap-n">02</div>
-          <div>
-            <div class="ap-h">360° Rotate & Zoom</div>
-            <div class="ap-p">Full 360° interaction on any surface. Guests examine every angle before committing — building desire and confidence simultaneously.</div>
-          </div>
-        </li>
-        <li class="ap">
-          <div class="ap-n">03</div>
-          <div>
-            <div class="ap-h">Smart Overlay Data</div>
-            <div class="ap-p">Allergen icons, calorie count, chef notes, wine pairings, and origin story appear as spatial AR tags directly on the 3D model.</div>
-          </div>
-        </li>
-        <li class="ap">
-          <div class="ap-n">04</div>
-          <div>
-            <div class="ap-h">2-Second Load. Any Device.</div>
-            <div class="ap-p">Instant load with no app install required. Optimised to run on every smartphone released after 2019.</div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-</section>
 
-<div class="divider"></div>
-
-<!-- INDUSTRIES -->
-<section id="industries">
-  <div class="section-label">Industries</div>
-  <div class="section-h">Built for every<br>food experience.</div>
-  <div class="ind-grid">
-    <div class="ind-card reveal">
-      <span class="ind-ico">🍽</span>
-      <div class="ind-h">Fine Dining & Restaurants</div>
-      <div class="ind-p">Elevate the tasting experience before the first course. Let guests explore your chef's vision through photorealistic 3D presentations of every dish on the degustation menu.</div>
-      <div class="ind-stat">+38%</div>
-      <div class="ind-stat-lbl">Avg. order value increase</div>
-    </div>
-    <div class="ind-card reveal" style="transition-delay:.1s">
-      <span class="ind-ico">🏨</span>
-      <div class="ind-h">Luxury Hotels & Resorts</div>
-      <div class="ind-p">Serve international guests with a multilingual AR menu across every F&B outlet — in-room dining, rooftop bar, pool café, and signature restaurant, all under one platform.</div>
-      <div class="ind-stat">25+</div>
-      <div class="ind-stat-lbl">Languages supported</div>
-    </div>
-    <div class="ind-card reveal" style="transition-delay:.2s">
-      <span class="ind-ico">🍔</span>
-      <div class="ind-h">QSR & Fast Casual Chains</div>
-      <div class="ind-p">Deploy across hundreds of locations from a single dashboard. Centralised menu management, live pricing, and localised customisation per outlet — all without IT involvement.</div>
-      <div class="ind-stat">100+</div>
-      <div class="ind-stat-lbl">Locations from single dashboard</div>
-    </div>
-    <div class="ind-card reveal">
-      <span class="ind-ico">✈️</span>
-      <div class="ind-h">Airport & Travel F&B</div>
-      <div class="ind-p">Remove language barriers entirely in high-transit environments. An international traveller can explore your full menu and order confidently in under 60 seconds.</div>
-      <div class="ind-stat">60s</div>
-      <div class="ind-stat-lbl">To first interaction</div>
-    </div>
-    <div class="ind-card reveal" style="transition-delay:.1s">
-      <span class="ind-ico">☁️</span>
-      <div class="ind-h">Cloud Kitchens</div>
-      <div class="ind-p">Build a premium brand perception for delivery-only operations. Your AR menu on third-party platforms communicates quality before the first order arrives.</div>
-      <div class="ind-stat">3×</div>
-      <div class="ind-stat-lbl">Reorder rate improvement</div>
-    </div>
-    <div class="ind-card reveal" style="transition-delay:.2s">
-      <span class="ind-ico">🎪</span>
-      <div class="ind-h">Events & Catering</div>
-      <div class="ind-p">Deploy custom-branded AR menus for weddings, corporate events, and pop-ups in minutes. Guests browse the full catering selection without any printed materials.</div>
-      <div class="ind-stat">48h</div>
-      <div class="ind-stat-lbl">Setup to live deployment</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- GLOBAL PRESENCE -->
-<section class="globe-sec" id="global">
-  <div class="globe-grid">
-    <div class="reveal-l">
-      <div class="section-label">Global Presence</div>
-      <div class="section-h">Trusted across<br>three continents.</div>
-      <p class="section-p">From independent cafés in Bengaluru to five-star hotel chains in Dubai and Singapore — LiveDish AI powers menus that transcend language and geography.</p>
-      <div class="globe-cities" style="margin-top:40px;">
-        <div class="gc-row reveal"><span class="gc-city">Bengaluru, India</span><span class="gc-rest">186 restaurants</span><div class="gc-bar-wrap"><div class="gc-bar" style="width:92%"></div></div></div>
-        <div class="gc-row reveal" style="transition-delay:.1s"><span class="gc-city">Mumbai, India</span><span class="gc-rest">94 restaurants</span><div class="gc-bar-wrap"><div class="gc-bar" style="width:72%"></div></div></div>
-        <div class="gc-row reveal" style="transition-delay:.15s"><span class="gc-city">Dubai, UAE</span><span class="gc-rest">68 restaurants</span><div class="gc-bar-wrap"><div class="gc-bar" style="width:56%"></div></div></div>
-        <div class="gc-row reveal" style="transition-delay:.2s"><span class="gc-city">Singapore</span><span class="gc-rest">42 restaurants</span><div class="gc-bar-wrap"><div class="gc-bar" style="width:40%"></div></div></div>
-        <div class="gc-row reveal" style="transition-delay:.25s"><span class="gc-city">London, UK</span><span class="gc-rest">28 restaurants</span><div class="gc-bar-wrap"><div class="gc-bar" style="width:26%"></div></div></div>
-        <div class="gc-row reveal" style="transition-delay:.3s"><span class="gc-city">New York, USA</span><span class="gc-rest">22 restaurants</span><div class="gc-bar-wrap"><div class="gc-bar" style="width:20%"></div></div></div>
-      </div>
-    </div>
-    <div class="globe-visual reveal-r">
-      <div class="globe-canvas">
-        <div class="globe-ring-outer"></div>
-        <div class="globe-ring-mid"></div>
-        <div class="globe-center">🌐</div>
-        <div class="globe-dot" style="top:25%;left:65%;animation-delay:0s;"></div>
-        <div class="globe-dot" style="top:30%;left:58%;animation-delay:.4s;"></div>
-        <div class="globe-dot" style="top:38%;left:72%;animation-delay:.8s;"></div>
-        <div class="globe-dot" style="top:50%;left:80%;animation-delay:.2s;"></div>
-        <div class="globe-dot" style="top:22%;left:45%;animation-delay:.6s;"></div>
-        <div class="globe-dot" style="top:60%;left:55%;animation-delay:1s;"></div>
-        <div class="globe-city" style="top:22%;left:67%;">SG</div>
-        <div class="globe-city" style="top:28%;left:59%;">DXB</div>
-        <div class="globe-city" style="top:36%;left:74%;">BLR</div>
-        <div class="globe-city" style="top:48%;left:82%;">MUM</div>
-        <div class="globe-city" style="top:20%;left:42%;">LHR</div>
-        <div class="globe-city" style="top:58%;left:43%;">NYC</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- TESTIMONIALS -->
-<section class="test-sec" id="reviews">
-  <div class="section-label">Client Stories</div>
-  <div class="section-h">Heard from the<br>restaurants themselves.</div>
-  <div class="test-grid">
-    <div class="test-card reveal">
-      <div class="stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
-      <div class="test-quote">"</div>
-      <div class="test-text">Our average order value jumped 38% in month one. Guests see the biryani in AR before ordering — the portion looks generous and confidence is instant. Tables are spending more and hesitating less.</div>
-      <div class="test-divider"></div>
-      <div class="test-author">
-        <div class="test-av">RK</div>
-        <div>
-          <div class="test-name">Ravi Kumar</div>
-          <div class="test-role">Owner — Spice Route, Bengaluru</div>
         </div>
-      </div>
-    </div>
-    <div class="test-card reveal" style="transition-delay:.1s">
-      <div class="stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
-      <div class="test-quote">"</div>
-      <div class="test-text">We're a five-star property with guests from 40+ countries. The multilingual AR menu removed every language barrier at our F&B outlets overnight. Our NPS score went up 14 points in the first quarter.</div>
-      <div class="test-divider"></div>
-      <div class="test-author">
-        <div class="test-av">PS</div>
-        <div>
-          <div class="test-name">Priya Sharma</div>
-          <div class="test-role">F&B Director — The Grand, Mumbai</div>
+
+        <div class="food-name" id="foodName">
+          Sushi Platter
         </div>
-      </div>
-    </div>
-    <div class="test-card reveal" style="transition-delay:.2s">
-      <div class="stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
-      <div class="test-quote">"</div>
-      <div class="test-text">We rolled this across all 12 QSR locations. The centralised dashboard alone saved us 3 FTEs in menu management. The analytics show us exactly which dishes to push during every hour of service.</div>
-      <div class="test-divider"></div>
-      <div class="test-author">
-        <div class="test-av">AM</div>
-        <div>
-          <div class="test-name">Arjun Menon</div>
-          <div class="test-role">CEO — FoodBox Group, Chennai</div>
+
+        <div class="food-tags">
+          <span>🔥 620 kcal</span>
+          <span>⭐ 4.9</span>
+          <span>🌿 Fresh</span>
+          <span>🚫 Gluten-Free</span>
         </div>
+
+        <button class="order-btn" id="priceBtn">
+          Add to Order — ₹890
+        </button>
+
       </div>
+
     </div>
+
   </div>
+
 </section>
 
-<div class="divider"></div>
+<!-- FEATURES -->
 
-<!-- PRICING -->
-<section class="pricing-sec" id="pricing">
-  <div class="section-label">Pricing</div>
-  <div class="section-h">Simple. Transparent.<br>No hidden fees.</div>
-  <p class="section-p">All plans include a 30-day free trial. No credit card required. Cancel anytime.</p>
-  <div class="price-grid">
-    <div class="price-card reveal">
-      <div class="price-tier">Starter</div>
-      <div class="price-amount"><span class="price-curr">₹</span>2,999<span class="price-per">/mo</span></div>
-      <div class="price-desc">For independent restaurants and cafés ready to modernise their guest experience.</div>
-      <ul class="price-feats">
-        <li><div class="feat-check">✓</div> 30 photorealistic AR dish models</li>
-        <li><div class="feat-check">✓</div> QR code menu generation</li>
-        <li><div class="feat-check">✓</div> Core analytics dashboard</li>
-        <li><div class="feat-check">✓</div> 2 languages</li>
-        <li><div class="feat-check">✓</div> Email support</li>
-        <li><div class="feat-check">✓</div> Mobile menu management</li>
-      </ul>
-      <button class="price-btn outline">Start Free Trial →</button>
-    </div>
-    <div class="price-card featured reveal" style="transition-delay:.1s">
-      <div class="price-badge">MOST POPULAR</div>
-      <div class="price-tier">Growth</div>
-      <div class="price-amount"><span class="price-curr">₹</span>7,499<span class="price-per">/mo</span></div>
-      <div class="price-desc">For growing restaurants that want AI upsells, full analytics, and multilingual menus.</div>
-      <ul class="price-feats">
-        <li><div class="feat-check">✓</div> 100 AR dish models</li>
-        <li><div class="feat-check">✓</div> AI recommendation engine</li>
-        <li><div class="feat-check">✓</div> Full analytics + revenue attribution</li>
-        <li><div class="feat-check">✓</div> 10 languages</li>
-        <li><div class="feat-check">✓</div> Live menu manager</li>
-        <li><div class="feat-check">✓</div> Priority support (24h SLA)</li>
-        <li><div class="feat-check">✓</div> POS integration (1 system)</li>
-      </ul>
-      <button class="price-btn solid">Start Free Trial →</button>
-    </div>
-    <div class="price-card reveal" style="transition-delay:.2s">
-      <div class="price-tier">Enterprise</div>
-      <div class="price-amount" style="font-size:36px;letter-spacing:-1px;">Custom</div>
-      <div class="price-desc">For hotel chains, QSR groups, and cloud kitchen networks operating at scale.</div>
-      <ul class="price-feats">
-        <li><div class="feat-check">✓</div> Unlimited AR models</li>
-        <li><div class="feat-check">✓</div> Multi-branch dashboard</li>
-        <li><div class="feat-check">✓</div> White-label & custom domain</li>
-        <li><div class="feat-check">✓</div> 25+ languages</li>
-        <li><div class="feat-check">✓</div> Full POS + KDS integration</li>
-        <li><div class="feat-check">✓</div> Dedicated success manager</li>
-        <li><div class="feat-check">✓</div> SLA + security compliance</li>
-      </ul>
-      <button class="price-btn outline">Contact Sales →</button>
-    </div>
+<section class="features">
+
+  <div class="section-title">
+    <h2>
+      Why Restaurants<br>
+      Choose LiveDish AI
+    </h2>
+
+    <p>
+      Designed for modern restaurants that want to deliver unforgettable dining experiences through AR technology.
+    </p>
   </div>
+
+  <div class="feature-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon">🥽</div>
+      <h3>Real-Time AR</h3>
+      <p>
+        Guests instantly preview life-size 3D dishes directly on their table using WebAR technology.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>No App Required</h3>
+      <p>
+        Customers simply scan a QR code and experience immersive menus directly in the browser.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📈</div>
+      <h3>Increase Orders</h3>
+      <p>
+        Restaurants see higher conversions and upsells because guests confidently explore dishes visually.
+      </p>
+    </div>
+
+  </div>
+
 </section>
 
-<div class="divider"></div>
+<!-- CTA -->
 
-<!-- FAQ -->
-<section id="faq">
-  <div class="section-label">FAQ</div>
-  <div class="section-h">Questions we get asked.</div>
-  <div class="faq-grid">
-    <div class="faq-item reveal">
-      <div class="faq-q">Do guests need to download an app?</div>
-      <div class="faq-a">No. LiveDish AR works entirely in the browser via WebAR technology. Guests scan a QR code, tap a link, and the experience launches instantly in Safari or Chrome. Zero friction, zero downloads.</div>
-    </div>
-    <div class="faq-item reveal" style="transition-delay:.1s">
-      <div class="faq-q">How long does onboarding take?</div>
-      <div class="faq-a">We guarantee your first set of 3D dish models within 48 hours of receiving your menu assets. Full deployment including branding and QR code generation typically takes 2–3 business days.</div>
-    </div>
-    <div class="faq-item reveal">
-      <div class="faq-q">Which phones are supported?</div>
-      <div class="faq-a">Any iPhone running iOS 14+ and any Android device from 2019 onwards with ARCore support. This covers approximately 96% of active smartphones globally.</div>
-    </div>
-    <div class="faq-item reveal" style="transition-delay:.1s">
-      <div class="faq-q">Can we update our menu ourselves?</div>
-      <div class="faq-a">Yes. Our live dashboard allows you to update pricing, flag sold-out items, add daily specials, and manage visibility for any dish — changes go live in under 10 seconds, no technical knowledge required.</div>
-    </div>
-    <div class="faq-item reveal">
-      <div class="faq-q">Is there a minimum contract?</div>
-      <div class="faq-a">No minimum contract for Starter and Growth plans. Both are month-to-month and can be cancelled at any time. Enterprise plans are typically annual with custom terms.</div>
-    </div>
-    <div class="faq-item reveal" style="transition-delay:.1s">
-      <div class="faq-q">Does it integrate with our existing POS?</div>
-      <div class="faq-a">Yes. We integrate with all major POS systems including Petpooja, UrbanPiper, Toast, Square, and Oracle Micros. Custom integrations are available for Enterprise clients via our REST API.</div>
-    </div>
+<section class="cta">
+
+  <div class="cta-box">
+
+    <h2>
+      Ready to Transform<br>
+      Your Restaurant?
+    </h2>
+
+    <p>
+      Join the future of dining experiences with LiveDish AI and bring your menu to life through immersive AR technology.
+    </p>
+
+    <button class="btn-primary">
+      Get Started →
+    </button>
+
   </div>
-</section>
 
-<div class="divider"></div>
-
-<!-- FINAL CTA -->
-<section class="final-cta">
-  <div class="final-box">
-    <div class="final-bg-text">AR</div>
-    <div class="final-content reveal">
-      <div class="section-label" style="justify-content:center;">Get Started</div>
-      <div class="final-h">Ready to make your<br><span style="color:var(--gold)">menu unforgettable?</span></div>
-      <div class="final-p">Join 500+ restaurants already using LiveDish AI. 30-day free trial, no credit card required, live in 48 hours.</div>
-      <div class="final-input-row">
-        <input class="final-inp" placeholder="your@restaurant.com" type="email"/>
-        <button class="cta-primary">Get Started →</button>
-      </div>
-      <div class="trust-logos">
-        <span class="trust-logo">ISO 27001</span>
-        <span class="trust-logo">SOC 2 Type II</span>
-        <span class="trust-logo">GDPR Ready</span>
-        <span class="trust-logo">Made in India 🇮🇳</span>
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- FOOTER -->
+
 <footer>
-  <div class="footer-grid">
-    <div class="foot-brand">
-      <div class="foot-brand-name">Live<span>Dish</span> AI</div>
-      <p>Transforming restaurant dining through Augmented Reality. Built with precision in Bengaluru, trusted by operators worldwide.</p>
-      <div class="social-links">
-        <div class="soc">𝕏</div>
-        <div class="soc">in</div>
-        <div class="soc">ig</div>
-        <div class="soc">yt</div>
-      </div>
-    </div>
-    <div class="foot-col">
-      <h5>Product</h5>
-      <ul>
-        <li><a href="#">AR Menu Platform</a></li>
-        <li><a href="#">AI Engine</a></li>
-        <li><a href="#">Analytics Suite</a></li>
-        <li><a href="#">Integrations</a></li>
-        <li><a href="#">API Access</a></li>
-        <li><a href="#">Changelog</a></li>
-      </ul>
-    </div>
-    <div class="foot-col">
-      <h5>Company</h5>
-      <ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Our Story</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">Press Kit</a></li>
-        <li><a href="#">Partners</a></li>
-        <li><a href="#">Blog</a></li>
-      </ul>
-    </div>
-    <div class="foot-col">
-      <h5>Support</h5>
-      <ul>
-        <li><a href="#">Documentation</a></li>
-        <li><a href="#">Help Centre</a></li>
-        <li><a href="#">Contact Us</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">Status Page</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="foot-bottom">
-    <span>© 2025 LiveDish AI Technologies Pvt. Ltd. All rights reserved.</span>
-    <span>
-      <a href="#">Privacy</a> &nbsp;·&nbsp;
-      <a href="#">Terms</a> &nbsp;·&nbsp;
-      <a href="#">Cookies</a>
-    </span>
-    <span>🇮🇳 Bengaluru, India</span>
-  </div>
+  © 2026 LiveDish AI — All Rights Reserved
 </footer>
 
 <script>
-// PARTICLE BACKGROUND
-const canvas = document.getElementById('canvas-bg');
-const ctx = canvas.getContext('2d');
-let W, H, particles = [];
 
-function resize() {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-class Particle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x = Math.random() * W;
-    this.y = Math.random() * H;
-    this.size = Math.random() * 1.5 + 0.3;
-    this.speed = Math.random() * 0.3 + 0.05;
-    this.opacity = Math.random() * 0.4 + 0.05;
-    this.angle = Math.random() * Math.PI * 2;
-    this.drift = (Math.random() - 0.5) * 0.003;
+const dishes = [
+  {
+    emoji:"🍣",
+    name:"Sushi Platter",
+    price:"₹890"
+  },
+  {
+    emoji:"🍔",
+    name:"Smash Burger",
+    price:"₹420"
+  },
+  {
+    emoji:"🍕",
+    name:"Truffle Pizza",
+    price:"₹780"
+  },
+  {
+    emoji:"🍜",
+    name:"Ramen Bowl",
+    price:"₹540"
+  },
+  {
+    emoji:"🍛",
+    name:"Moroccan Tagine",
+    price:"₹680"
   }
-  update() {
-    this.y -= this.speed;
-    this.angle += this.drift;
-    this.x += Math.sin(this.angle) * 0.4;
-    if (this.y < -5) this.reset(), this.y = H + 5;
-  }
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(201,168,76,${this.opacity})`;
-    ctx.fill();
-  }
-}
+];
 
-for (let i = 0; i < 120; i++) particles.push(new Particle());
+let index = 0;
 
-function animate() {
-  ctx.clearRect(0, 0, W, H);
-  particles.forEach(p => { p.update(); p.draw(); });
-  requestAnimationFrame(animate);
-}
-animate();
+setInterval(()=>{
 
-// SCROLL PROGRESS
-const prog = document.getElementById('prog');
-window.addEventListener('scroll', () => {
-  const s = document.documentElement.scrollTop;
-  const h = document.documentElement.scrollHeight - window.innerHeight;
-  prog.style.width = (s / h * 100) + '%';
-});
+  index = (index + 1) % dishes.length;
 
-// REVEAL ON SCROLL
-const revealEls = document.querySelectorAll('.reveal, .reveal-l, .reveal-r, .tl-item');
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-}, { threshold: 0.08 });
-revealEls.forEach(r => obs.observe(r));
+  document.getElementById("dish").innerHTML = dishes[index].emoji;
+  document.getElementById("foodName").innerHTML = dishes[index].name;
+  document.getElementById("priceBtn").innerHTML =
+  `Add to Order — ${dishes[index].price}`;
 
-// COUNTER ANIMATION
-function animCount(el) {
-  const target = parseFloat(el.dataset.target);
-  const suffix = el.dataset.suffix || '';
-  const dec = target % 1 !== 0 ? 1 : 0;
-  const dur = 2000, step = 16;
-  let cur = 0;
-  const inc = target / (dur / step);
-  const t = setInterval(() => {
-    cur += inc;
-    if (cur >= target) { cur = target; clearInterval(t); }
-    el.textContent = cur.toFixed(dec) + suffix;
-  }, step);
-}
-const statObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.querySelectorAll('[data-target]').forEach(animCount);
-      statObs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.4 });
-const metricsEl = document.querySelector('.metrics-inner');
-if (metricsEl) statObs.observe(metricsEl);
+},3000);
 
-// BENTO MOUSE GLOW
-document.querySelectorAll('.bento-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width * 100).toFixed(1);
-    const y = ((e.clientY - r.top) / r.height * 100).toFixed(1);
-    card.style.setProperty('--mx', x + '%');
-    card.style.setProperty('--my', y + '%');
-  });
-});
-
-// DISH CYCLE IN PHONE
-const dishes = ['🍛','🍣','🍕','🥘','🍜','🥗','🍱','🫕','🥩','🍝'];
-const names  = ['Lamb Rogan Josh','Bluefin Tuna Nigiri','Truffle Margherita','Moroccan Tagine','Tokyo Ramen','Quinoa Power Bowl','Wagyu Bento','Saffron Bouillabaisse','Dry-Aged Ribeye','Squid Ink Pasta'];
-let di = 0;
-setInterval(() => {
-  di = (di + 1) % dishes.length;
-  const d = document.getElementById('p-dish');
-  const n = document.getElementById('p-name');
-  if (d) {
-    d.style.opacity = '0';
-    setTimeout(() => { d.textContent = dishes[di]; d.style.opacity = '1'; }, 300);
-  }
-  if (n) { n.style.opacity = '0'; setTimeout(() => { n.textContent = names[di]; n.style.opacity = '1'; }, 300); }
-}, 2800);
-const pDish = document.getElementById('p-dish');
-const pName = document.getElementById('p-name');
-if (pDish) pDish.style.transition = 'opacity .3s';
-if (pName) pName.style.transition = 'opacity .3s';
 </script>
+
 </body>
 </html>
