@@ -3,1275 +3,540 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>LiveDish AI — Premium AR Menu Experience</title>
+<title>LiveDish AI — AR Menu Experience</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-
+*{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --gold:#d4af37;
-  --gold2:#f5e08b;
-  --gold-dark:#a07c1a;
-  --dark:#04050c;
-  --dark2:#080a14;
-  --dark3:#0c0e1c;
-  --text:#ffffff;
-  --muted:#6e7590;
-  --muted2:#9aa0bb;
-  --card:#090b17;
-  --border:rgba(255,255,255,0.06);
-  --gold-border:rgba(212,175,55,0.25);
+  --gold:#C9A84C;--gold2:#E8C97A;--gold3:#F5E4B0;
+  --dark:#07080F;--dark2:#0D0F1A;--dark3:#131627;
+  --text:#F0F0F8;--muted:#6B7299;--muted2:#8890B5;
 }
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden;cursor:none}
 
-html{scroll-behavior:smooth;}
+.cursor-dot{width:8px;height:8px;background:white;border-radius:50%;position:fixed;top:0;left:0;transform:translate(-50%,-50%);pointer-events:none;z-index:9999;transition:transform .1s}
+.cursor-ring{width:40px;height:40px;border:1px solid rgba(255,255,255,.4);border-radius:50%;position:fixed;top:0;left:0;transform:translate(-50%,-50%);pointer-events:none;z-index:9998;transition:width .3s,height .3s,border-color .3s}
+.cursor-ring.expand{width:70px;height:70px;border-color:var(--gold)}
 
-body{
-  font-family:'DM Sans',sans-serif;
-  background:var(--dark);
-  color:white;
-  overflow-x:hidden;
-  cursor:none;
-}
+#particleCanvas{position:fixed;inset:0;z-index:-1;opacity:.6}
 
-/* CUSTOM CURSOR */
-.cursor{
-  position:fixed;
-  width:10px;height:10px;
-  background:var(--gold);
-  border-radius:50%;
-  pointer-events:none;
-  z-index:9999;
-  transform:translate(-50%,-50%);
-  transition:transform 0.08s ease;
-  mix-blend-mode:difference;
-}
-.cursor-ring{
-  position:fixed;
-  width:38px;height:38px;
-  border:1.5px solid rgba(212,175,55,0.5);
-  border-radius:50%;
-  pointer-events:none;
-  z-index:9998;
-  transform:translate(-50%,-50%);
-  transition:transform 0.18s ease, width 0.3s, height 0.3s, opacity 0.3s;
-}
-body:has(button:hover) .cursor-ring,
-body:has(a:hover) .cursor-ring{
-  width:60px;height:60px;
-  opacity:0.5;
-}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.35;z-index:-1;pointer-events:none}
 
-/* NOISE OVERLAY */
-.noise{
-  position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:0;opacity:0.4;
-}
+nav{position:fixed;top:0;left:0;right:0;height:76px;display:flex;justify-content:space-between;align-items:center;padding:0 5%;z-index:1000;transition:.4s}
+nav.scrolled{background:rgba(7,8,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
+.logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-1px;display:flex;align-items:center;gap:10px}
+.logo-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+.logo em{font-style:normal;color:var(--gold)}
+.nav-links{display:flex;gap:36px}
+.nav-links a{color:var(--muted2);text-decoration:none;font-size:13px;letter-spacing:.3px;transition:.3s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--gold);transition:.3s}
+.nav-links a:hover{color:white}.nav-links a:hover::after{width:100%}
+.nav-cta{background:transparent;border:1px solid rgba(201,168,76,.4);color:var(--gold);padding:12px 28px;border-radius:100px;font-size:13px;font-weight:500;cursor:none;transition:.3s;letter-spacing:.5px;font-family:'DM Sans',sans-serif}
+.nav-cta:hover{background:var(--gold);color:black;transform:translateY(-1px)}
 
-/* BG */
-.bg{
-  position:fixed;inset:0;
-  background:
-    radial-gradient(ellipse 60% 50% at 10% 0%, rgba(212,175,55,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 90% 100%, rgba(212,175,55,0.04) 0%, transparent 60%),
-    #04050c;
-  z-index:-3;
-}
-.grid{
-  position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-  background-size:50px 50px;
-  mask-image:radial-gradient(ellipse 80% 80% at center, black 0%, transparent 80%);
-  z-index:-2;
-}
+.hero{min-height:100vh;display:flex;align-items:center;padding:0 5%;position:relative;overflow:hidden}
+.hero-content{max-width:900px;position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border:1px solid rgba(201,168,76,.25);border-radius:100px;color:var(--gold);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:36px;background:rgba(201,168,76,.04);opacity:0;animation:slideIn .8s .2s forwards}
+.hero-badge-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 1.5s infinite}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(52px,8.5vw,118px);line-height:.9;font-weight:800;letter-spacing:-4px;opacity:0;animation:slideIn .8s .4s forwards}
+.hero h1 .outline{color:transparent;-webkit-text-stroke:1.5px var(--gold);display:block}
+.hero h1 .solid{display:block}
+.hero-sub{margin:32px 0 48px;color:var(--muted2);font-size:17px;line-height:1.9;max-width:560px;font-weight:300;opacity:0;animation:slideIn .8s .6s forwards}
+.hero-actions{display:flex;gap:18px;flex-wrap:wrap;opacity:0;animation:slideIn .8s .8s forwards}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:black;padding:17px 36px;border:none;border-radius:100px;font-weight:600;cursor:none;transition:.35s;font-size:14px;letter-spacing:.3px;position:relative;overflow:hidden;font-family:'DM Sans',sans-serif}
+.btn-gold::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold2),var(--gold3));opacity:0;transition:.35s}
+.btn-gold:hover::before{opacity:1}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(201,168,76,.25)}
+.btn-gold span{position:relative;z-index:1}
+.btn-ghost{background:transparent;color:white;border:1px solid rgba(255,255,255,.12);padding:17px 36px;border-radius:100px;font-weight:400;cursor:none;transition:.35s;font-size:14px;display:flex;align-items:center;gap:10px;font-family:'DM Sans',sans-serif}
+.btn-ghost:hover{border-color:rgba(201,168,76,.4);color:var(--gold)}
+.hero-stats{position:absolute;right:5%;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:24px;opacity:0;animation:fadeIn .8s 1.2s forwards}
+.stat-item{text-align:right}
+.stat-num{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;color:white;line-height:1}
+.stat-num em{color:var(--gold);font-style:normal}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
+.stat-line{width:1px;height:40px;background:rgba(255,255,255,.08);margin-left:auto}
+.scroll-hint{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;animation:fadeIn 1s 1.5s forwards}
+.scroll-hint span{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom, var(--gold), transparent);animation:scrollAnim 2s infinite}
 
-/* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;height:76px;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:0 5%;
-  background:rgba(4,5,12,0.8);
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
-  z-index:1000;
-  border-bottom:1px solid var(--border);
-}
-.logo{
-  font-family:'Syne',sans-serif;
-  font-size:22px;font-weight:800;letter-spacing:-0.5px;
-  display:flex;align-items:center;gap:10px;
-}
-.logo-icon{
-  width:36px;height:36px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;
-}
-.logo span{color:var(--gold);}
-.nav-links{display:flex;gap:36px;}
-.nav-links a{
-  color:var(--muted2);text-decoration:none;font-size:14px;
-  font-weight:500;transition:.3s;position:relative;
-}
-.nav-links a::after{
-  content:'';position:absolute;bottom:-4px;left:0;
-  width:0;height:1.5px;background:var(--gold);
-  transition:.3s;
-}
-.nav-links a:hover{color:white;}
-.nav-links a:hover::after{width:100%;}
-.nav-right{display:flex;align-items:center;gap:16px;}
-.nav-badge{
-  font-size:11px;font-weight:600;
-  background:rgba(212,175,55,0.12);
-  border:1px solid var(--gold-border);
-  color:var(--gold2);
-  padding:5px 12px;border-radius:50px;
-  letter-spacing:0.5px;
-}
-.nav-btn{
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#000;border:none;padding:12px 26px;
-  border-radius:50px;font-weight:700;cursor:none;
-  font-size:13px;letter-spacing:0.3px;
-  transition:.3s;font-family:'Syne',sans-serif;
-}
-.nav-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(212,175,55,0.25);}
+.ar-demo{padding:130px 5%;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+.ar-left{position:relative}
+.ar-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;opacity:0;transform:translateY(20px);transition:.8s}
+.ar-left h2{font-family:'Syne',sans-serif;font-size:clamp(36px,4.5vw,60px);line-height:1.05;font-weight:800;letter-spacing:-2px;margin-bottom:28px;opacity:0;transform:translateY(20px);transition:.8s .1s}
+.ar-left p{color:var(--muted2);font-size:16px;line-height:1.9;font-weight:300;max-width:480px;margin-bottom:40px;opacity:0;transform:translateY(20px);transition:.8s .2s}
+.ar-chips{display:flex;gap:12px;flex-wrap:wrap;opacity:0;transform:translateY(20px);transition:.8s .3s}
+.ar-left.visible .ar-label,.ar-left.visible h2,.ar-left.visible p,.ar-left.visible .ar-chips{opacity:1;transform:none}
+.chip{padding:10px 20px;border-radius:100px;border:1px solid rgba(201,168,76,.2);background:rgba(201,168,76,.04);color:var(--gold2);font-size:12px;letter-spacing:.5px;transition:.3s;cursor:none}
+.chip:hover,.chip.active-chip{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.5);color:white}
 
-/* HERO */
-.hero{
-  min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  text-align:center;padding:120px 5% 80px;
-  position:relative;z-index:1;
-}
-.hero-content{max-width:1000px;}
+.phone-wrap{display:flex;justify-content:center;position:relative}
+.phone-aura{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.1),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:aura 4s ease-in-out infinite}
+.phone{width:295px;height:630px;border-radius:50px;background:linear-gradient(170deg,#0E1020,#090B14);border:1.5px solid rgba(255,255,255,.1);position:relative;overflow:hidden;box-shadow:0 60px 120px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.04),inset 0 0 40px rgba(201,168,76,.03);animation:phoneFloat 5s ease-in-out infinite}
+.phone-notch{width:100px;height:26px;background:black;border-radius:0 0 18px 18px;position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:10}
+.phone-inner{padding:36px 20px 24px;height:100%;display:flex;flex-direction:column}
+.phone-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;margin-top:10px}
+.phone-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:1.5px}
+.live-pill{font-size:10px;color:var(--gold);border:1px solid rgba(201,168,76,.3);padding:4px 12px;border-radius:20px;display:flex;align-items:center;gap:6px}
+.live-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:pulse 1s infinite}
+.scan-area{flex:1;border-radius:24px;border:1px solid rgba(201,168,76,.15);background:rgba(255,255,255,.02);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.corner{position:absolute;width:24px;height:24px;border-color:var(--gold);border-style:solid}
+.c-tl{top:16px;left:16px;border-width:2px 0 0 2px;border-radius:4px 0 0 0}
+.c-tr{top:16px;right:16px;border-width:2px 2px 0 0;border-radius:0 4px 0 0}
+.c-bl{bottom:16px;left:16px;border-width:0 0 2px 2px;border-radius:0 0 0 4px}
+.c-br{bottom:16px;right:16px;border-width:0 2px 2px 0;border-radius:0 0 4px 0}
+.scan-beam{position:absolute;width:85%;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent);left:7.5%;box-shadow:0 0 16px var(--gold);animation:beam 2.5s ease-in-out infinite}
+.dish-display{font-size:90px;filter:drop-shadow(0 16px 32px rgba(201,168,76,.25));animation:dishFloat 3.5s ease-in-out infinite;transition:opacity .3s,transform .3s}
+.dish-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;text-align:center;margin-bottom:10px;transition:opacity .3s}
+.dish-meta{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.meta-tag{font-size:10px;padding:5px 12px;border-radius:20px;border:1px solid rgba(201,168,76,.18);background:rgba(201,168,76,.05);color:var(--gold2);letter-spacing:.3px}
+.order-bar{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:60px;padding:16px 22px;cursor:none}
+.order-bar span:first-child{font-weight:600;font-size:13px;color:black}
+.order-price{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:black}
+.nav-dots{display:flex;gap:6px;justify-content:center;margin-top:14px}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:.3s;cursor:none}
+.nav-dot.active{background:var(--gold);width:18px;border-radius:4px}
 
-.eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  padding:8px 20px;
-  border:1px solid var(--gold-border);
-  border-radius:50px;color:var(--gold2);
-  margin-bottom:36px;font-size:11px;
-  letter-spacing:2px;text-transform:uppercase;
-  background:rgba(212,175,55,0.06);
-  font-weight:600;
-  animation:fadeUp .9s ease both;
-}
-.eyebrow-dot{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--gold);
-  box-shadow:0 0 8px var(--gold);
-  animation:pulse 2s infinite;
-}
+.marquee-wrap{padding:56px 0;overflow:hidden;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04)}
+.marquee{display:flex;gap:0;animation:marquee 22s linear infinite}
+.marquee-track{display:flex;gap:80px;align-items:center;padding-right:80px;white-space:nowrap}
+.m-item{font-family:'Syne',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:20px}
+.m-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;flex-shrink:0}
 
-.hero h1{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(52px,8.5vw,108px);
-  line-height:.93;font-weight:800;
-  letter-spacing:-3px;
-  animation:fadeUp 1s ease .1s both;
-}
-.hero h1 em{
-  font-style:normal;color:transparent;
-  -webkit-text-stroke:1.5px var(--gold);
-  display:inline-block;
-  position:relative;
-}
-.hero h1 em::after{
-  content:attr(data-text);
-  position:absolute;inset:0;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  opacity:0;
-  animation:shimmerReveal 3s 1.5s ease forwards;
-}
-.hero-sub{
-  margin:28px auto 0;max-width:640px;
-  color:var(--muted2);font-size:17px;line-height:1.85;
-  font-weight:300;
-  animation:fadeUp 1s ease .2s both;
-}
-.hero-btns{
-  display:flex;justify-content:center;gap:16px;
-  flex-wrap:wrap;margin-top:44px;
-  animation:fadeUp 1s ease .3s both;
-}
-.btn-primary{
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#000;padding:17px 36px;
-  border:none;border-radius:60px;
-  font-weight:700;cursor:none;
-  font-size:15px;letter-spacing:0.2px;
-  transition:.35s;font-family:'Syne',sans-serif;
-  display:flex;align-items:center;gap:10px;
-}
-.btn-primary:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(212,175,55,.3);}
-.btn-secondary{
-  background:transparent;color:white;
-  border:1px solid rgba(255,255,255,.12);
-  padding:17px 36px;border-radius:60px;
-  font-weight:500;cursor:none;transition:.35s;font-size:15px;
-  display:flex;align-items:center;gap:10px;
-}
-.btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+.features{padding:130px 5%}
+.section-head{text-align:center;margin-bottom:90px}
+.section-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.section-head h2{font-family:'Syne',sans-serif;font-size:clamp(40px,5.5vw,72px);font-weight:800;letter-spacing:-3px;line-height:.95}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.feat{background:var(--dark2);padding:52px 40px;position:relative;overflow:hidden;opacity:0;transform:translateY(30px);transition:.7s;cursor:none}
+.feat:nth-child(1){border-radius:24px 0 0 0}
+.feat:nth-child(3){border-radius:0 24px 0 0}
+.feat:nth-child(4){border-radius:0 0 0 24px}
+.feat:nth-child(6){border-radius:0 0 24px 0}
+.feat::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top left,rgba(201,168,76,.07),transparent 50%);opacity:0;transition:.4s}
+.feat:hover::before{opacity:1}
+.feat:hover{background:#0F1122}
+.feat.visible{opacity:1;transform:none}
+.feat-num{font-family:'Syne',sans-serif;font-size:11px;letter-spacing:3px;color:rgba(201,168,76,.35);margin-bottom:28px}
+.feat-icon-wrap{width:60px;height:60px;border-radius:16px;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:28px;transition:.4s}
+.feat:hover .feat-icon-wrap{background:rgba(201,168,76,.12);transform:scale(1.05)}
+.feat h3{font-family:'Syne',sans-serif;font-size:21px;font-weight:700;margin-bottom:14px;letter-spacing:-.5px}
+.feat p{color:var(--muted2);font-size:14px;line-height:1.85;font-weight:300}
+.feat-arrow{position:absolute;bottom:40px;right:40px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:16px;transition:.4s;opacity:0}
+.feat:hover .feat-arrow{opacity:1;transform:translateX(3px)}
 
-/* STATS ROW */
-.stats{
-  display:flex;justify-content:center;gap:0;
-  margin-top:64px;
-  animation:fadeUp 1s ease .4s both;
-}
-.stat{
-  padding:0 40px;
-  border-right:1px solid var(--border);
-  text-align:center;
-}
-.stat:last-child{border-right:none;}
-.stat-num{
-  font-family:'Syne',sans-serif;
-  font-size:32px;font-weight:800;
-  color:var(--gold2);letter-spacing:-1px;
-}
-.stat-label{color:var(--muted);font-size:12px;margin-top:4px;font-weight:400;}
+.process{padding:130px 5%;background:var(--dark2)}
+.process-inner{max-width:1200px;margin:0 auto}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:90px;background:rgba(255,255,255,.05);border-radius:24px;overflow:hidden}
+.step{background:var(--dark2);padding:50px 36px;position:relative;opacity:0;transform:translateY(20px);transition:.6s}
+.step.visible{opacity:1;transform:none}
+.step-num{font-family:'Syne',sans-serif;font-size:64px;font-weight:800;color:rgba(201,168,76,.06);line-height:1;margin-bottom:20px}
+.step-icon{font-size:32px;margin-bottom:18px}
+.step h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:12px;letter-spacing:-.3px}
+.step p{color:var(--muted2);font-size:13px;line-height:1.8;font-weight:300}
+.step-bar{height:2px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));margin-bottom:28px;transition:width 1s .5s;border-radius:2px}
+.step.visible .step-bar{width:100%}
 
-/* PHONE SECTION */
-.phone-section{
-  padding:100px 5%;
-  display:flex;justify-content:center;align-items:center;
-  position:relative;z-index:1;
-}
-.phone-wrap{position:relative;display:flex;align-items:center;gap:60px;flex-wrap:wrap;justify-content:center;}
+.numbers{padding:130px 5%}
+.numbers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:80px;background:rgba(255,255,255,.04);border-radius:24px;overflow:hidden}
+.num-block{background:var(--dark);padding:60px 40px;text-align:center}
+.num-value{font-family:'Syne',sans-serif;font-size:clamp(42px,5vw,68px);font-weight:800;letter-spacing:-3px;line-height:1}
+.num-value em{color:var(--gold);font-style:normal}
+.num-label{color:var(--muted2);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-top:12px;font-weight:300}
 
-.phone-info{max-width:360px;}
-.phone-info h3{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(32px,5vw,52px);
-  font-weight:800;letter-spacing:-2px;
-  line-height:1.05;margin-bottom:20px;
-}
-.phone-info p{color:var(--muted2);line-height:1.8;font-size:15px;margin-bottom:28px;}
-.phone-feature-list{display:flex;flex-direction:column;gap:14px;}
-.phone-feat{
-  display:flex;align-items:center;gap:14px;
-  background:rgba(255,255,255,.02);
-  border:1px solid var(--border);
-  padding:14px 18px;border-radius:14px;
-  transition:.3s;
-}
-.phone-feat:hover{border-color:var(--gold-border);background:rgba(212,175,55,.04);}
-.phone-feat-icon{
-  width:38px;height:38px;border-radius:10px;
-  background:rgba(212,175,55,.08);
-  border:1px solid var(--gold-border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0;
-}
-.phone-feat-text{font-size:14px;font-weight:500;}
-.phone-feat-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.cta-section{padding:130px 5%}
+.cta-box{background:var(--dark2);border-radius:32px;padding:110px 60px;text-align:center;border:1px solid rgba(201,168,76,.1);position:relative;overflow:hidden}
+.cta-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.cta-box h2{font-family:'Syne',sans-serif;font-size:clamp(40px,6vw,80px);font-weight:800;letter-spacing:-3px;line-height:.95;position:relative;z-index:2;margin-bottom:28px}
+.cta-box h2 em{font-style:italic;color:var(--gold)}
+.cta-box p{color:var(--muted2);font-size:17px;font-weight:300;line-height:1.8;max-width:580px;margin:0 auto 48px;position:relative;z-index:2}
+.cta-buttons{display:flex;justify-content:center;gap:18px;position:relative;z-index:2;flex-wrap:wrap}
+.cta-ring{position:absolute;border:1px solid rgba(201,168,76,.08);border-radius:50%;pointer-events:none}
+.cta-ring:nth-child(1){width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);animation:ringPulse 3s infinite}
+.cta-ring:nth-child(2){width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);animation:ringPulse 3s 1s infinite}
+.cta-ring:nth-child(3){width:800px;height:800px;top:50%;left:50%;transform:translate(-50%,-50%);animation:ringPulse 3s 2s infinite}
 
-/* RINGS + PHONE */
-.phone-device-wrap{position:relative;}
-.rings span{
-  position:absolute;border:1px solid rgba(212,175,55,0.12);
-  border-radius:50%;left:50%;top:50%;
-  transform:translate(-50%,-50%);animation:ring 5s infinite;
-}
-.rings span:nth-child(1){width:300px;height:300px;}
-.rings span:nth-child(2){width:440px;height:440px;animation-delay:1.5s;}
-.rings span:nth-child(3){width:600px;height:600px;animation-delay:3s;}
+footer{padding:60px 5%;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+.footer-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;letter-spacing:-1px}
+.footer-logo em{font-style:normal;color:var(--gold)}
+.footer-links{display:flex;gap:32px}
+.footer-links a{color:var(--muted);font-size:13px;text-decoration:none;transition:.3s}
+.footer-links a:hover{color:white}
+.footer-right{color:var(--muted);font-size:12px;letter-spacing:.5px}
 
-.phone{
-  width:300px;height:620px;
-  border-radius:48px;
-  border:1.5px solid rgba(255,255,255,0.07);
-  background:linear-gradient(175deg,#0d1022,#080a14);
-  position:relative;overflow:hidden;
-  box-shadow:
-    0 60px 120px rgba(0,0,0,.9),
-    0 0 0 1px rgba(255,255,255,0.03),
-    inset 0 1px 0 rgba(255,255,255,0.07);
-  animation:phoneFloat 6s ease-in-out infinite;
-}
-.notch{
-  width:100px;height:26px;
-  background:#000;border-radius:0 0 18px 18px;
-  position:absolute;top:0;left:50%;transform:translateX(-50%);
-  z-index:10;display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.notch-cam{width:8px;height:8px;background:#1a1a1a;border-radius:50%;}
-.notch-speaker{width:40px;height:4px;background:#1a1a1a;border-radius:4px;}
+@keyframes slideIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+@keyframes scrollAnim{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes beam{0%{top:10px;opacity:0}15%{opacity:1}85%{opacity:1}100%{top:calc(100% - 20px);opacity:0}}
+@keyframes dishFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+@keyframes phoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes aura{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.2);opacity:.25}}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes ringPulse{0%{opacity:.6;transform:translate(-50%,-50%) scale(.9)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.15)}}
 
-.phone-ui{padding:32px 18px 20px;}
-.phone-header{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:18px;
+@media(max-width:1024px){
+  .hero-stats{display:none}
+  .ar-demo{grid-template-columns:1fr;gap:60px}
+  .features-grid{grid-template-columns:1fr 1fr}
+  .process-steps{grid-template-columns:repeat(2,1fr)}
+  .numbers-grid{grid-template-columns:repeat(2,1fr)}
 }
-.phone-app-name{
-  font-family:'Syne',sans-serif;font-weight:700;
-  font-size:14px;color:var(--gold);letter-spacing:.5px;
-}
-.live-pill{
-  display:flex;align-items:center;gap:6px;
-  border:1px solid rgba(212,175,55,0.3);
-  color:var(--gold2);padding:4px 12px;
-  border-radius:40px;font-size:11px;font-weight:600;
-  background:rgba(212,175,55,0.08);
-}
-.live-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 1.5s infinite;}
-
-.scan-area{
-  height:260px;border-radius:24px;
-  border:1px solid rgba(212,175,55,0.15);
-  background:rgba(255,255,255,0.015);
-  position:relative;overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-}
-.corner{position:absolute;width:24px;height:24px;border-color:var(--gold);border-style:solid;}
-.tl{top:14px;left:14px;border-width:2.5px 0 0 2.5px;border-radius:4px 0 0 0;}
-.tr{top:14px;right:14px;border-width:2.5px 2.5px 0 0;border-radius:0 4px 0 0;}
-.bl{bottom:14px;left:14px;border-width:0 0 2.5px 2.5px;border-radius:0 0 0 4px;}
-.br{bottom:14px;right:14px;border-width:0 2.5px 2.5px 0;border-radius:0 0 4px 0;}
-.scan-line{
-  position:absolute;width:86%;height:1.5px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-  left:7%;box-shadow:0 0 16px var(--gold);
-  animation:scanLine 2.5s infinite ease-in-out;
-}
-.dish-emoji{
-  font-size:90px;
-  animation:dishFloat 3s ease-in-out infinite;
-  filter:drop-shadow(0 10px 30px rgba(212,175,55,.25));
-  transition:all 0.4s ease;
-}
-.dish-glow{
-  position:absolute;
-  width:120px;height:60px;
-  background:rgba(212,175,55,0.12);
-  border-radius:50%;
-  bottom:20px;filter:blur(16px);
-  animation:glowPulse 3s ease-in-out infinite;
-}
-
-.dish-title{
-  font-family:'Syne',sans-serif;
-  font-size:26px;font-weight:800;
-  text-align:center;margin-top:18px;
-  letter-spacing:-.5px;
-  transition:all .4s ease;
-}
-.dish-meta{
-  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
-  margin-top:12px;
-}
-.tag-pill{
-  padding:5px 11px;border-radius:40px;
-  border:1px solid rgba(212,175,55,.2);
-  background:rgba(212,175,55,.04);
-  color:var(--gold2);font-size:10px;font-weight:500;
-}
-.order-btn{
-  width:100%;margin-top:16px;padding:16px;
-  border:none;border-radius:50px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#000;font-weight:700;font-size:15px;
-  cursor:none;transition:.3s;
-  font-family:'Syne',sans-serif;letter-spacing:.2px;
-}
-.order-btn:hover{transform:scale(1.02);}
-.dish-carousel-dots{
-  display:flex;justify-content:center;gap:6px;margin-top:12px;
-}
-.dot{
-  width:5px;height:5px;border-radius:50%;
-  background:rgba(255,255,255,.15);transition:.3s;
-}
-.dot.active{background:var(--gold);width:16px;border-radius:4px;}
-
-/* MARQUEE */
-.marquee-section{
-  padding:40px 0;overflow:hidden;
-  border-top:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  background:rgba(255,255,255,.01);
-  position:relative;z-index:1;
-}
-.marquee-track{
-  display:flex;gap:60px;
-  animation:marquee 20s linear infinite;
-  width:max-content;
-}
-.marquee-item{
-  display:flex;align-items:center;gap:14px;
-  color:var(--muted);font-size:13px;font-weight:500;
-  letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;
-}
-.marquee-item span{color:var(--gold);font-size:18px;}
-
-/* HOW IT WORKS */
-.how{padding:130px 5%;position:relative;z-index:1;}
-.section-label{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
-  color:var(--gold);font-weight:600;margin-bottom:20px;
-}
-.section-label::before{
-  content:'';width:24px;height:1.5px;background:var(--gold);
-}
-.section-h{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(40px,6vw,68px);
-  font-weight:800;letter-spacing:-2.5px;line-height:1;
-  margin-bottom:20px;
-}
-.section-p{color:var(--muted2);max-width:600px;line-height:1.85;font-size:15px;}
-
-.steps{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:24px;margin-top:70px;
-}
-.step{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:28px;padding:40px 36px;
-  position:relative;overflow:hidden;
-  transition:.4s cubic-bezier(.23,1,.32,1);
-}
-.step:hover{
-  transform:translateY(-12px);
-  border-color:var(--gold-border);
-  box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(212,175,55,.1);
-}
-.step-num{
-  font-family:'Syne',sans-serif;
-  font-size:72px;font-weight:800;
-  color:rgba(212,175,55,.06);
-  position:absolute;top:-12px;right:20px;
-  line-height:1;letter-spacing:-4px;
-}
-.step-icon{
-  width:60px;height:60px;border-radius:18px;
-  background:rgba(212,175,55,.07);
-  border:1px solid rgba(212,175,55,.15);
-  display:flex;align-items:center;justify-content:center;
-  font-size:26px;margin-bottom:24px;
-}
-.step h3{
-  font-family:'Syne',sans-serif;
-  font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:-.3px;
-}
-.step p{color:var(--muted2);line-height:1.8;font-size:14px;}
-.step-bar{
-  position:absolute;bottom:0;left:0;right:0;
-  height:3px;
-  background:linear-gradient(90deg,var(--gold),var(--gold2));
-  transform:scaleX(0);transform-origin:left;
-  transition:.4s cubic-bezier(.23,1,.32,1);
-}
-.step:hover .step-bar{transform:scaleX(1);}
-
-/* FEATURES */
-.features{padding:130px 5%;position:relative;z-index:1;}
-.feature-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:20px;margin-top:70px;
-}
-.fc{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:24px;padding:36px;
-  position:relative;overflow:hidden;
-  transition:.4s cubic-bezier(.23,1,.32,1);
-}
-.fc::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at top right,rgba(212,175,55,.06),transparent 50%);
-  opacity:0;transition:.4s;
-}
-.fc:hover{transform:translateY(-8px);border-color:var(--gold-border);}
-.fc:hover::before{opacity:1;}
-.fc-icon{
-  width:56px;height:56px;border-radius:16px;
-  background:rgba(212,175,55,.07);
-  border:1px solid rgba(212,175,55,.15);
-  display:flex;align-items:center;justify-content:center;
-  font-size:24px;margin-bottom:22px;
-}
-.fc h3{
-  font-family:'Syne',sans-serif;
-  font-size:20px;font-weight:700;margin-bottom:12px;letter-spacing:-.3px;
-}
-.fc p{color:var(--muted2);line-height:1.8;font-size:14px;}
-.fc-tag{
-  display:inline-block;margin-top:18px;
-  font-size:11px;font-weight:600;
-  background:rgba(212,175,55,.08);
-  border:1px solid rgba(212,175,55,.15);
-  color:var(--gold2);padding:4px 12px;border-radius:40px;
-  letter-spacing:.5px;
-}
-
-/* TESTIMONIALS */
-.testimonials{padding:100px 5%;position:relative;z-index:1;}
-.testi-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:20px;margin-top:60px;
-}
-.testi{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:24px;padding:32px;transition:.3s;
-}
-.testi:hover{border-color:var(--gold-border);transform:translateY(-4px);}
-.testi-stars{display:flex;gap:4px;margin-bottom:18px;}
-.testi-stars span{font-size:14px;}
-.testi q{
-  font-size:15px;line-height:1.8;color:var(--muted2);
-  font-style:italic;font-weight:300;
-}
-.testi-author{
-  display:flex;align-items:center;gap:12px;margin-top:24px;
-  padding-top:20px;border-top:1px solid var(--border);
-}
-.testi-avatar{
-  width:42px;height:42px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;
-  background:rgba(212,175,55,.1);
-  border:1px solid rgba(212,175,55,.2);
-}
-.testi-name{font-weight:600;font-size:14px;}
-.testi-role{font-size:12px;color:var(--muted);}
-
-/* PRICING */
-.pricing{padding:130px 5%;position:relative;z-index:1;}
-.pricing-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:20px;margin-top:60px;max-width:1000px;margin-left:auto;margin-right:auto;
-}
-.plan{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:28px;padding:40px 36px;
-  position:relative;transition:.4s;
-}
-.plan:hover{transform:translateY(-6px);}
-.plan.featured{
-  border-color:var(--gold-border);
-  background:linear-gradient(160deg,#0e1124,#090b16);
-  box-shadow:0 0 0 1px rgba(212,175,55,.12),0 40px 80px rgba(0,0,0,.4);
-}
-.plan-badge{
-  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#000;font-size:11px;font-weight:800;
-  padding:5px 18px;border-radius:50px;letter-spacing:.8px;
-  font-family:'Syne',sans-serif;
-}
-.plan-name{
-  font-family:'Syne',sans-serif;font-size:16px;
-  font-weight:700;color:var(--muted2);letter-spacing:.5px;
-  text-transform:uppercase;margin-bottom:14px;
-}
-.plan-price{
-  font-family:'Syne',sans-serif;
-  font-size:52px;font-weight:800;
-  letter-spacing:-2px;line-height:1;
-}
-.plan-price sup{font-size:24px;letter-spacing:0;font-weight:500;color:var(--gold);}
-.plan-period{color:var(--muted);font-size:13px;margin-top:6px;}
-.plan-divider{height:1px;background:var(--border);margin:28px 0;}
-.plan-features{display:flex;flex-direction:column;gap:14px;}
-.plan-feat{
-  display:flex;align-items:center;gap:12px;
-  font-size:14px;color:var(--muted2);
-}
-.plan-feat::before{
-  content:'✓';color:var(--gold);font-weight:700;flex-shrink:0;
-  width:20px;height:20px;border-radius:50%;
-  background:rgba(212,175,55,.1);
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;
-}
-.plan-btn{
-  width:100%;margin-top:30px;padding:15px;
-  border-radius:50px;font-weight:700;
-  font-family:'Syne',sans-serif;font-size:14px;cursor:none;
-  transition:.3s;
-}
-.plan-btn-outline{
-  background:transparent;
-  border:1px solid rgba(255,255,255,.12);color:white;
-}
-.plan-btn-outline:hover{border-color:var(--gold);color:var(--gold);}
-.plan-btn-solid{
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  border:none;color:#000;
-}
-.plan-btn-solid:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(212,175,55,.25);}
-
-/* CTA */
-.cta-section{
-  padding:100px 5%;
-  position:relative;z-index:1;
-}
-.cta-box{
-  background:linear-gradient(140deg,#0d1124,#090b16);
-  border:1px solid rgba(212,175,55,.15);
-  padding:90px 60px;border-radius:40px;
-  text-align:center;position:relative;overflow:hidden;
-  max-width:1100px;margin:0 auto;
-}
-.cta-glow{
-  position:absolute;
-  width:500px;height:500px;
-  background:radial-gradient(circle,rgba(212,175,55,.08),transparent 70%);
-  top:50%;left:50%;transform:translate(-50%,-50%);
-  pointer-events:none;
-}
-.cta-box h2{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(40px,6vw,70px);
-  font-weight:800;letter-spacing:-3px;
-  position:relative;z-index:1;
-}
-.cta-box p{
-  max-width:600px;margin:24px auto;
-  color:var(--muted2);line-height:1.8;font-size:16px;
-  position:relative;z-index:1;
-}
-.cta-btns{
-  display:flex;justify-content:center;gap:16px;
-  flex-wrap:wrap;position:relative;z-index:1;
-}
-.cta-email{
-  display:flex;align-items:center;gap:12px;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--border);
-  border-radius:60px;padding:6px 6px 6px 20px;
-  position:relative;z-index:1;
-}
-.cta-email input{
-  background:transparent;border:none;outline:none;
-  color:white;font-size:14px;width:240px;font-family:'DM Sans',sans-serif;
-}
-.cta-email input::placeholder{color:var(--muted);}
-.cta-email button{
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  border:none;color:#000;padding:12px 24px;
-  border-radius:50px;font-weight:700;cursor:none;
-  font-size:13px;white-space:nowrap;
-  font-family:'Syne',sans-serif;
-}
-
-/* FOOTER */
-footer{
-  padding:60px 5%;
-  border-top:1px solid var(--border);
-  position:relative;z-index:1;
-}
-.footer-inner{
-  display:flex;justify-content:space-between;
-  align-items:flex-start;flex-wrap:wrap;gap:40px;
-}
-.footer-brand .logo{margin-bottom:14px;}
-.footer-brand p{color:var(--muted);font-size:13px;max-width:260px;line-height:1.7;}
-.footer-links h4{
-  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
-  letter-spacing:1px;color:var(--muted2);text-transform:uppercase;
-  margin-bottom:16px;
-}
-.footer-links ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
-.footer-links ul li a{color:var(--muted);text-decoration:none;font-size:13px;transition:.3s;}
-.footer-links ul li a:hover{color:var(--gold);}
-.footer-bottom{
-  margin-top:50px;padding-top:24px;border-top:1px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center;
-  flex-wrap:wrap;gap:16px;
-  color:var(--muted);font-size:12px;
-}
-.footer-socials{display:flex;gap:12px;}
-.social-btn{
-  width:36px;height:36px;border-radius:50%;
-  background:rgba(255,255,255,.04);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;cursor:none;transition:.3s;
-  text-decoration:none;color:var(--muted);
-}
-.social-btn:hover{border-color:var(--gold-border);color:var(--gold);}
-
-/* SCROLL REVEAL */
-.reveal{opacity:0;transform:translateY(30px);transition:.7s cubic-bezier(.23,1,.32,1);}
-.reveal.visible{opacity:1;transform:translateY(0);}
-
-/* ANIMATIONS */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(28px);}
-  to{opacity:1;transform:translateY(0);}
-}
-@keyframes phoneFloat{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-14px);}
-}
-@keyframes dishFloat{
-  0%,100%{transform:translateY(0) rotate(0deg);}
-  50%{transform:translateY(-10px) rotate(8deg);}
-}
-@keyframes scanLine{
-  0%{top:10px;opacity:0;}
-  20%{opacity:1;}
-  80%{opacity:1;}
-  100%{top:235px;opacity:0;}
-}
-@keyframes ring{
-  0%{transform:translate(-50%,-50%) scale(.85);opacity:.4;}
-  100%{transform:translate(-50%,-50%) scale(1.35);opacity:0;}
-}
-@keyframes pulse{
-  0%,100%{opacity:1;}
-  50%{opacity:.4;}
-}
-@keyframes glowPulse{
-  0%,100%{opacity:.6;}
-  50%{opacity:1;}
-}
-@keyframes marquee{
-  from{transform:translateX(0);}
-  to{transform:translateX(-50%);}
-}
-@keyframes shimmerReveal{
-  from{opacity:0;}
-  to{opacity:1;}
-}
-@keyframes countUp{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-/* MOBILE */
 @media(max-width:768px){
-  .nav-links,.nav-badge{display:none;}
-  nav{padding:0 5%;}
-  .hero{padding:100px 5% 60px;}
-  .hero h1{letter-spacing:-2px;}
-  .stats{gap:0;flex-wrap:wrap;}
-  .stat{padding:16px 24px;border-right:none;border-bottom:1px solid var(--border);}
-  .stat:last-child{border-bottom:none;}
-  .phone-wrap{gap:40px;}
-  .phone-info{text-align:center;}
-  .phone{width:270px;height:580px;}
-  .scan-area{height:230px;}
-  .dish-emoji{font-size:76px;}
-  .cta-box{padding:60px 30px;}
-  .footer-inner{flex-direction:column;}
-  .footer-bottom{flex-direction:column;text-align:center;}
-  .steps,.feature-grid,.testi-grid,.pricing-grid{grid-template-columns:1fr;}
-  .cta-email input{width:160px;}
-  .hero-btns{flex-direction:column;align-items:center;}
-}
-
-@media(max-width:480px){
-  .phone{width:250px;height:550px;}
+  .nav-links{display:none}
+  .hero h1{letter-spacing:-2px}
+  .features-grid{grid-template-columns:1fr}
+  .cta-box{padding:70px 28px}
+  .feat:nth-child(n){border-radius:0}
+  .feat:first-child{border-radius:16px 16px 0 0}
+  .feat:last-child{border-radius:0 0 16px 16px}
 }
 </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-<div class="bg"></div>
-<div class="grid"></div>
-<div class="noise"></div>
+<div class="cursor-dot" id="dot"></div>
+<div class="cursor-ring" id="ring"></div>
+<canvas id="particleCanvas"></canvas>
 
-<!-- NAV -->
-<nav>
+<nav id="nav">
   <div class="logo">
-    <div class="logo-icon">🍽️</div>
-    Live<span>Dish</span>
+    <span class="logo-dot"></span>
+    Live<em>Dish</em> AI
   </div>
   <div class="nav-links">
-    <a href="#how">How It Works</a>
     <a href="#features">Features</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#contact">Contact</a>
+    <a href="#process">How It Works</a>
+    <a href="#numbers">Results</a>
+    <a href="#">Pricing</a>
   </div>
-  <div class="nav-right">
-    <div class="nav-badge">🌍 Global</div>
-    <button class="nav-btn">Book Demo</button>
-  </div>
+  <button class="nav-cta">Book a Demo</button>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <div class="eyebrow">
-      <div class="eyebrow-dot"></div>
-      AR DINING TECHNOLOGY · AVAILABLE WORLDWIDE
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Augmented Reality Dining
     </div>
     <h1>
-      Menus That<br>
-      <em data-text="Come Alive">Come Alive</em><br>
-      in AR
+      <span class="solid">See Before</span>
+      <span class="outline">You Order</span>
     </h1>
-    <p class="hero-sub">
-      LiveDish AI transforms your restaurant's menu into a photorealistic augmented reality dining experience. Guests scan, explore, and order 3D dishes directly from their table — no app required.
-    </p>
-    <div class="hero-btns">
-      <button class="btn-primary">🚀 Start Free Demo</button>
-      <button class="btn-secondary">▶ Watch Experience</button>
+    <p class="hero-sub">LiveDish AI brings your menu to life. Guests scan a dish, see a photorealistic 3D preview on their table, and order with complete confidence.</p>
+    <div class="hero-actions">
+      <button class="btn-gold"><span>Experience the Demo →</span></button>
+      <button class="btn-ghost">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
+        Watch 90-sec Film
+      </button>
     </div>
-
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num" data-target="4200">4,200+</div>
-        <div class="stat-label">Restaurants Live</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">38%</div>
-        <div class="stat-label">Avg Order Uplift</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">180+</div>
-        <div class="stat-label">Countries</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">4.9★</div>
-        <div class="stat-label">App Store Rating</div>
-      </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num"><span class="hero-count" data-target="340">0</span><em>%</em></div>
+      <div class="stat-label">Upsell Increase</div>
     </div>
+    <div class="stat-line"></div>
+    <div class="stat-item">
+      <div class="stat-num"><span class="hero-count" data-target="48">0</span><em>hr</em></div>
+      <div class="stat-label">Go-Live Timeline</div>
+    </div>
+    <div class="stat-line"></div>
+    <div class="stat-item">
+      <div class="stat-num"><span class="hero-count" data-target="98">0</span><em>%</em></div>
+      <div class="stat-label">Diner Satisfaction</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="marquee-section">
-  <div class="marquee-track" id="marqueeTrack">
-    <div class="marquee-item"><span>🥽</span> WebAR Technology</div>
-    <div class="marquee-item"><span>⚡</span> No App Required</div>
-    <div class="marquee-item"><span>🌍</span> 180+ Countries</div>
-    <div class="marquee-item"><span>🍽️</span> Photorealistic 3D Dishes</div>
-    <div class="marquee-item"><span>📊</span> Real-Time Analytics</div>
-    <div class="marquee-item"><span>🔒</span> GDPR Compliant</div>
-    <div class="marquee-item"><span>🎯</span> AI Recommendations</div>
-    <div class="marquee-item"><span>🌿</span> Allergen Info</div>
-    <div class="marquee-item"><span>💳</span> Integrated Payments</div>
-    <div class="marquee-item"><span>🔢</span> QR Code Ready</div>
-    <!-- duplicate for seamless scroll -->
-    <div class="marquee-item"><span>🥽</span> WebAR Technology</div>
-    <div class="marquee-item"><span>⚡</span> No App Required</div>
-    <div class="marquee-item"><span>🌍</span> 180+ Countries</div>
-    <div class="marquee-item"><span>🍽️</span> Photorealistic 3D Dishes</div>
-    <div class="marquee-item"><span>📊</span> Real-Time Analytics</div>
-    <div class="marquee-item"><span>🔒</span> GDPR Compliant</div>
-    <div class="marquee-item"><span>🎯</span> AI Recommendations</div>
-    <div class="marquee-item"><span>🌿</span> Allergen Info</div>
-    <div class="marquee-item"><span>💳</span> Integrated Payments</div>
-    <div class="marquee-item"><span>🔢</span> QR Code Ready</div>
+<div class="marquee-wrap">
+  <div class="marquee">
+    <div class="marquee-track" id="mt1">
+      <span class="m-item"><span class="m-dot"></span>WebAR Technology</span>
+      <span class="m-item"><span class="m-dot"></span>Zero App Install</span>
+      <span class="m-item"><span class="m-dot"></span>Real-Time 3D Preview</span>
+      <span class="m-item"><span class="m-dot"></span>Allergen Alerts</span>
+      <span class="m-item"><span class="m-dot"></span>Instant QR Ordering</span>
+      <span class="m-item"><span class="m-dot"></span>AI Recommendations</span>
+      <span class="m-item"><span class="m-dot"></span>Multi-Language Support</span>
+      <span class="m-item"><span class="m-dot"></span>POS Integration</span>
+    </div>
+    <div class="marquee-track" aria-hidden="true">
+      <span class="m-item"><span class="m-dot"></span>WebAR Technology</span>
+      <span class="m-item"><span class="m-dot"></span>Zero App Install</span>
+      <span class="m-item"><span class="m-dot"></span>Real-Time 3D Preview</span>
+      <span class="m-item"><span class="m-dot"></span>Allergen Alerts</span>
+      <span class="m-item"><span class="m-dot"></span>Instant QR Ordering</span>
+      <span class="m-item"><span class="m-dot"></span>AI Recommendations</span>
+      <span class="m-item"><span class="m-dot"></span>Multi-Language Support</span>
+      <span class="m-item"><span class="m-dot"></span>POS Integration</span>
+    </div>
   </div>
 </div>
 
-<!-- PHONE SECTION -->
-<section class="phone-section">
+<section class="ar-demo" id="ar-demo">
+  <div class="ar-left" id="ar-left">
+    <div class="ar-label">Live AR Demo</div>
+    <h2>Your Menu, Rendered in 3D</h2>
+    <p>Watch your dishes come alive on any table. Guests preview life-size meals before they order — reducing regret, increasing spend, delighting every time.</p>
+    <div class="ar-chips" id="chipRow">
+      <div class="chip active-chip" onclick="switchDish(0,this)">🍣 Sushi</div>
+      <div class="chip" onclick="switchDish(1,this)">🍔 Burger</div>
+      <div class="chip" onclick="switchDish(2,this)">🍕 Pizza</div>
+      <div class="chip" onclick="switchDish(3,this)">🍜 Ramen</div>
+      <div class="chip" onclick="switchDish(4,this)">🥗 Salad</div>
+      <div class="chip" onclick="switchDish(5,this)">🍛 Curry</div>
+    </div>
+  </div>
   <div class="phone-wrap">
-
-    <div class="phone-info reveal">
-      <div class="section-label">AR Experience</div>
-      <h3>Point. Scan. Order.</h3>
-      <p>Guests simply scan the QR code on your table, point their phone at the menu, and instantly see photorealistic 3D dishes floating on their table. No downloads. No friction. Just wow.</p>
-      <div class="phone-feature-list">
-        <div class="phone-feat">
-          <div class="phone-feat-icon">🍔</div>
-          <div>
-            <div class="phone-feat-text">Life-size 3D Previews</div>
-            <div class="phone-feat-sub">See every dish at actual scale before ordering</div>
-          </div>
+    <div class="phone-aura"></div>
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-inner">
+        <div class="phone-header">
+          <div class="phone-title">LIVEDISH AR</div>
+          <div class="live-pill"><span class="live-dot"></span>LIVE</div>
         </div>
-        <div class="phone-feat">
-          <div class="phone-feat-icon">🌿</div>
-          <div>
-            <div class="phone-feat-text">Nutritional + Allergen Info</div>
-            <div class="phone-feat-sub">Full transparency with every dish card</div>
-          </div>
+        <div class="scan-area">
+          <div class="corner c-tl"></div>
+          <div class="corner c-tr"></div>
+          <div class="corner c-bl"></div>
+          <div class="corner c-br"></div>
+          <div class="scan-beam"></div>
+          <div class="dish-display" id="dishEmoji">🍣</div>
         </div>
-        <div class="phone-feat">
-          <div class="phone-feat-icon">🌐</div>
-          <div>
-            <div class="phone-feat-text">40+ Languages</div>
-            <div class="phone-feat-sub">Auto-detects guest language via browser</div>
-          </div>
+        <div class="dish-name" id="dishName">Sushi Omakase</div>
+        <div class="dish-meta" id="dishMeta">
+          <span class="meta-tag">🔥 580 kcal</span>
+          <span class="meta-tag">⭐ 4.9</span>
+          <span class="meta-tag">🌿 Raw</span>
+          <span class="meta-tag">🚫 Gluten-Free</span>
         </div>
-        <div class="phone-feat">
-          <div class="phone-feat-icon">💳</div>
-          <div>
-            <div class="phone-feat-text">In-AR Ordering & Payment</div>
-            <div class="phone-feat-sub">Full checkout without leaving the experience</div>
-          </div>
+        <div class="order-bar">
+          <span>Add to Order</span>
+          <span class="order-price" id="dishPrice">₹1,290</span>
         </div>
-      </div>
-    </div>
-
-    <div class="phone-device-wrap reveal">
-      <div class="rings">
-        <span></span><span></span><span></span>
-      </div>
-      <div class="phone">
-        <div class="notch">
-          <div class="notch-cam"></div>
-          <div class="notch-speaker"></div>
-        </div>
-        <div class="phone-ui">
-          <div class="phone-header">
-            <div class="phone-app-name">LIVEDISH AR</div>
-            <div class="live-pill"><div class="live-dot"></div>LIVE</div>
-          </div>
-          <div class="scan-area">
-            <div class="corner tl"></div>
-            <div class="corner tr"></div>
-            <div class="corner bl"></div>
-            <div class="corner br"></div>
-            <div class="scan-line"></div>
-            <div class="dish-glow"></div>
-            <div class="dish-emoji" id="dishEmoji">🍣</div>
-          </div>
-          <div class="dish-title" id="dishTitle">Sushi Platter</div>
-          <div class="dish-meta" id="dishMeta">
-            <span class="tag-pill">🔥 620 kcal</span>
-            <span class="tag-pill">⭐ 4.9</span>
-            <span class="tag-pill">🚫 Gluten-Free</span>
-          </div>
-          <button class="order-btn" id="orderBtn">Add to Order — ₹890</button>
-          <div class="dish-carousel-dots" id="carouselDots"></div>
+        <div class="nav-dots" id="navDots">
+          <div class="nav-dot active" onclick="switchDish(0,null)"></div>
+          <div class="nav-dot" onclick="switchDish(1,null)"></div>
+          <div class="nav-dot" onclick="switchDish(2,null)"></div>
+          <div class="nav-dot" onclick="switchDish(3,null)"></div>
+          <div class="nav-dot" onclick="switchDish(4,null)"></div>
+          <div class="nav-dot" onclick="switchDish(5,null)"></div>
         </div>
       </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how" id="how">
-  <div class="section-label">Process</div>
-  <div class="section-h reveal">How It Works</div>
-  <p class="section-p reveal">From onboarding to live AR menus in under 48 hours — our team handles the 3D modelling, setup, and integration.</p>
-
-  <div class="steps">
-    <div class="step reveal">
-      <div class="step-num">01</div>
-      <div class="step-icon">📸</div>
-      <h3>Submit Your Menu</h3>
-      <p>Share your menu and dish photos or videos. Our AI and 3D artists convert them into photorealistic AR models within 24–48 hours.</p>
-      <div class="step-bar"></div>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">02</div>
-      <div class="step-icon">⚙️</div>
-      <h3>We Build & Integrate</h3>
-      <p>LiveDish creates your branded AR menu portal. We integrate with your existing POS system — Square, Toast, Lightspeed, and more.</p>
-      <div class="step-bar"></div>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">03</div>
-      <div class="step-icon">🔢</div>
-      <h3>Print & Place QR Codes</h3>
-      <p>Print your LiveDish QR codes (we provide beautiful table tent templates) and place them on tables. That's it.</p>
-      <div class="step-bar"></div>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">04</div>
-      <div class="step-icon">📈</div>
-      <h3>Watch Orders Grow</h3>
-      <p>Guests scan, experience, and order. You see real-time analytics on popular dishes, session time, and revenue uplift from your dashboard.</p>
-      <div class="step-bar"></div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
 <section class="features" id="features">
-  <div class="section-label">Capabilities</div>
-  <div class="section-h reveal">Everything You Need</div>
-  <p class="section-p reveal">Enterprise-grade features built for restaurants of all sizes — from independent bistros to global chains.</p>
-
-  <div class="feature-grid">
-    <div class="fc reveal">
-      <div class="fc-icon">🥽</div>
-      <h3>WebAR — No App Download</h3>
-      <p>Our WebAR technology works entirely in the browser. Guests scan a QR code and the experience loads in seconds — compatible with iOS Safari and Android Chrome.</p>
-      <div class="fc-tag">Industry First</div>
-    </div>
-    <div class="fc reveal">
-      <div class="fc-icon">🤖</div>
-      <h3>AI Upsell Engine</h3>
-      <p>Our AI learns your guests' preferences and surfaces smart upsells and pairings — like wine recommendations and dessert suggestions — increasing average basket size.</p>
-      <div class="fc-tag">GPT-4 Powered</div>
-    </div>
-    <div class="fc reveal">
-      <div class="fc-icon">📊</div>
-      <h3>Live Analytics Dashboard</h3>
-      <p>Track AR session counts, dish interaction rates, conversion funnels, and revenue impact. Export reports in CSV or connect to your BI tools via API.</p>
-      <div class="fc-tag">Real-Time</div>
-    </div>
-    <div class="fc reveal">
-      <div class="fc-icon">🌍</div>
-      <h3>Multi-Language & Currency</h3>
-      <p>Auto-detect guest language from browser settings. Support for 40+ languages and 180+ currencies with live exchange rates — perfect for tourist hotspots.</p>
-      <div class="fc-tag">Global Ready</div>
-    </div>
-    <div class="fc reveal">
-      <div class="fc-icon">🔒</div>
-      <h3>Enterprise Security</h3>
-      <p>SOC 2 Type II certified, GDPR compliant, PCI DSS Level 1 for payments. Your guest data stays yours — never sold, never shared.</p>
-      <div class="fc-tag">SOC 2 Certified</div>
-    </div>
-    <div class="fc reveal">
-      <div class="fc-icon">🔌</div>
-      <h3>Open API & POS Integrations</h3>
-      <p>Plug into 50+ POS systems including Square, Toast, Revel, Lightspeed, and Oracle Hospitality. Or build custom with our developer API.</p>
-      <div class="fc-tag">50+ Integrations</div>
-    </div>
+  <div class="section-head">
+    <div class="section-tag">Why LiveDish</div>
+    <h2>Built for<br>World-Class Dining</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feat"><div class="feat-num">01</div><div class="feat-icon-wrap">🥽</div><h3>Instant AR Preview</h3><p>Life-size 3D dish models appear directly on the table via WebAR. No headsets, no downloads — just a QR scan.</p><div class="feat-arrow">→</div></div>
+    <div class="feat"><div class="feat-num">02</div><div class="feat-icon-wrap">🧠</div><h3>AI Recommendations</h3><p>Our model learns guest preferences in real-time, surfacing the right dishes at the right moment to maximize delight and spend.</p><div class="feat-arrow">→</div></div>
+    <div class="feat"><div class="feat-num">03</div><div class="feat-icon-wrap">⚡</div><h3>Zero-Friction Ordering</h3><p>From AR preview to checkout in seconds. Works on every smartphone browser worldwide — no app required.</p><div class="feat-arrow">→</div></div>
+    <div class="feat"><div class="feat-num">04</div><div class="feat-icon-wrap">🌍</div><h3>40+ Languages</h3><p>Menus automatically translate using guest device locale. Allergens clearly flagged in every language, globally.</p><div class="feat-arrow">→</div></div>
+    <div class="feat"><div class="feat-num">05</div><div class="feat-icon-wrap">📊</div><h3>Live Analytics</h3><p>Real-time dashboards show which dishes guests preview most, dwell time, and conversion rate per item.</p><div class="feat-arrow">→</div></div>
+    <div class="feat"><div class="feat-num">06</div><div class="feat-icon-wrap">🔗</div><h3>POS Integration</h3><p>Native connectors to Lightspeed, Toast, Square, and custom APIs. Orders flow directly to kitchen displays.</p><div class="feat-arrow">→</div></div>
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
-<section class="testimonials">
-  <div class="section-label">Customers</div>
-  <div class="section-h reveal">Loved by Restaurants Worldwide</div>
-
-  <div class="testi-grid">
-    <div class="testi reveal">
-      <div class="testi-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
-      <q>LiveDish transformed our rooftop restaurant. Guests spend more time at the table exploring dishes, and our average check jumped by 42% in the first month.</q>
-      <div class="testi-author">
-        <div class="testi-avatar">👨‍🍳</div>
-        <div>
-          <div class="testi-name">Marco Bellini</div>
-          <div class="testi-role">Owner, Terrazza Milano — Italy</div>
-        </div>
-      </div>
+<section class="process" id="process">
+  <div class="process-inner">
+    <div class="section-head">
+      <div class="section-tag">How It Works</div>
+      <h2>Live in<br>Four Steps</h2>
     </div>
-    <div class="testi reveal">
-      <div class="testi-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
-      <q>We serve international guests daily and the auto language detection is a game changer. No more pointing at pictures. Our TripAdvisor score went from 4.1 to 4.8.</q>
-      <div class="testi-author">
-        <div class="testi-avatar">👩‍💼</div>
-        <div>
-          <div class="testi-name">Priya Nair</div>
-          <div class="testi-role">F&B Director, Grand Hyatt — Mumbai</div>
-        </div>
+    <div class="process-steps">
+      <div class="step" id="step1">
+        <div class="step-bar"></div>
+        <div class="step-num">01</div>
+        <div class="step-icon">📸</div>
+        <h3>Photograph Dishes</h3>
+        <p>Send us professional photos or use our AI scan kit — we handle all 3D model creation entirely in-house.</p>
       </div>
-    </div>
-    <div class="testi reveal">
-      <div class="testi-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
-      <q>Setup took less than 2 days. The POS integration with Toast was seamless. I only wish we'd found LiveDish earlier — it's now our biggest competitive advantage.</q>
-      <div class="testi-author">
-        <div class="testi-avatar">🧑‍🍳</div>
-        <div>
-          <div class="testi-name">James Okafor</div>
-          <div class="testi-role">CEO, Spice Route Restaurants — Lagos</div>
-        </div>
+      <div class="step" id="step2">
+        <div class="step-bar"></div>
+        <div class="step-num">02</div>
+        <div class="step-icon">⚙️</div>
+        <h3>We Build Your Menu</h3>
+        <p>Our team creates photorealistic WebAR assets and loads your full menu into the platform within 48 hours.</p>
+      </div>
+      <div class="step" id="step3">
+        <div class="step-bar"></div>
+        <div class="step-num">03</div>
+        <div class="step-icon">🪄</div>
+        <h3>Print QR Codes</h3>
+        <p>Place our table QR cards. No hardware. No wiring. Guests are a single scan away from full AR immersion.</p>
+      </div>
+      <div class="step" id="step4">
+        <div class="step-bar"></div>
+        <div class="step-num">04</div>
+        <div class="step-icon">🚀</div>
+        <h3>Watch Revenue Grow</h3>
+        <p>Track increased order values, upsells, and guest satisfaction through your live dashboard in real-time.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
-<section class="pricing" id="pricing">
-  <div class="section-label">Plans</div>
-  <div class="section-h reveal" style="text-align:center">Simple, Global Pricing</div>
-  <p class="section-p reveal" style="text-align:center;margin:0 auto 0;">No per-transaction fees. No setup costs. Cancel anytime.</p>
-
-  <div class="pricing-grid">
-    <div class="plan reveal">
-      <div class="plan-name">Starter</div>
-      <div class="plan-price"><sup>$</sup>49</div>
-      <div class="plan-period">per month · billed annually</div>
-      <div class="plan-divider"></div>
-      <div class="plan-features">
-        <div class="plan-feat">Up to 50 AR menu items</div>
-        <div class="plan-feat">1 restaurant location</div>
-        <div class="plan-feat">Basic analytics</div>
-        <div class="plan-feat">QR code generation</div>
-        <div class="plan-feat">Email support</div>
-      </div>
-      <button class="plan-btn plan-btn-outline">Get Started</button>
-    </div>
-    <div class="plan featured reveal">
-      <div class="plan-badge">MOST POPULAR</div>
-      <div class="plan-name">Professional</div>
-      <div class="plan-price"><sup>$</sup>149</div>
-      <div class="plan-period">per month · billed annually</div>
-      <div class="plan-divider"></div>
-      <div class="plan-features">
-        <div class="plan-feat">Unlimited AR menu items</div>
-        <div class="plan-feat">Up to 5 locations</div>
-        <div class="plan-feat">AI Upsell Engine</div>
-        <div class="plan-feat">Full analytics & exports</div>
-        <div class="plan-feat">POS integrations</div>
-        <div class="plan-feat">40+ languages</div>
-        <div class="plan-feat">Priority support (24h)</div>
-      </div>
-      <button class="plan-btn plan-btn-solid">Start Free Trial</button>
-    </div>
-    <div class="plan reveal">
-      <div class="plan-name">Enterprise</div>
-      <div class="plan-price" style="font-size:36px;letter-spacing:-1px;">Custom</div>
-      <div class="plan-period">volume pricing available</div>
-      <div class="plan-divider"></div>
-      <div class="plan-features">
-        <div class="plan-feat">Unlimited locations</div>
-        <div class="plan-feat">White-label branding</div>
-        <div class="plan-feat">Dedicated 3D team</div>
-        <div class="plan-feat">Custom integrations</div>
-        <div class="plan-feat">SLA & uptime guarantee</div>
-        <div class="plan-feat">24/7 dedicated support</div>
-      </div>
-      <button class="plan-btn plan-btn-outline">Contact Sales</button>
-    </div>
+<section class="numbers" id="numbers">
+  <div class="section-head">
+    <div class="section-tag">Results</div>
+    <h2>Numbers<br>That Matter</h2>
+  </div>
+  <div class="numbers-grid">
+    <div class="num-block"><div class="num-value"><span class="count-up" data-target="340">0</span><em>%</em></div><div class="num-label">Average Upsell Lift</div></div>
+    <div class="num-block"><div class="num-value"><span class="count-up" data-target="2800">0</span><em>+</em></div><div class="num-label">Restaurants Onboarded</div></div>
+    <div class="num-block"><div class="num-value"><span class="count-up" data-target="98">0</span><em>%</em></div><div class="num-label">Diner Satisfaction Score</div></div>
+    <div class="num-block"><div class="num-value"><span class="count-up" data-target="48">0</span><em>hr</em></div><div class="num-label">Go-Live Timeline</div></div>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section" id="contact">
+<section class="cta-section">
   <div class="cta-box">
+    <div class="cta-ring"></div>
+    <div class="cta-ring"></div>
+    <div class="cta-ring"></div>
     <div class="cta-glow"></div>
-    <h2>Ready to Transform<br>Your Restaurant?</h2>
-    <p>Join 4,200+ restaurants across 180 countries delivering unforgettable AR dining experiences with LiveDish AI. Your free trial starts the moment you sign up.</p>
-    <div class="cta-btns" style="flex-direction:column;align-items:center;gap:16px;">
-      <div class="cta-email">
-        <input type="email" placeholder="Enter your restaurant email..."/>
-        <button>Get Free Trial →</button>
-      </div>
-      <p style="color:var(--muted);font-size:12px;position:relative;z-index:1;">No credit card required · 14-day free trial · Cancel anytime</p>
+    <h2>Your Menu<br>Deserves to be <em>Seen</em></h2>
+    <p>Join thousands of restaurants transforming the dining experience. Free 30-day pilot, no credit card required.</p>
+    <div class="cta-buttons">
+      <button class="btn-gold"><span>Start Free Pilot →</span></button>
+      <button class="btn-ghost">Talk to Sales</button>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <div class="logo" style="margin-bottom:12px;font-size:20px;">
-        <div class="logo-icon">🍽️</div>
-        Live<span>Dish</span>
-      </div>
-      <p>The world's leading AR menu platform for modern restaurants. Serving guests in 180+ countries.</p>
-    </div>
-    <div class="footer-links">
-      <h4>Product</h4>
-      <ul>
-        <li><a href="#">AR Experience</a></li>
-        <li><a href="#">AI Upsell Engine</a></li>
-        <li><a href="#">Analytics</a></li>
-        <li><a href="#">Integrations</a></li>
-        <li><a href="#">API Docs</a></li>
-      </ul>
-    </div>
-    <div class="footer-links">
-      <h4>Company</h4>
-      <ul>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Blog</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">Press Kit</a></li>
-        <li><a href="#">Partners</a></li>
-      </ul>
-    </div>
-    <div class="footer-links">
-      <h4>Legal</h4>
-      <ul>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">GDPR</a></li>
-        <li><a href="#">Cookie Policy</a></li>
-        <li><a href="#">Security</a></li>
-      </ul>
-    </div>
+  <div class="footer-logo">Live<em>Dish</em> AI</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Careers</a>
+    <a href="#">Blog</a>
+    <a href="#">Contact</a>
   </div>
-  <div class="footer-bottom">
-    <span>© 2026 LiveDish AI Inc. All rights reserved.</span>
-    <div class="footer-socials">
-      <a class="social-btn" href="#">𝕏</a>
-      <a class="social-btn" href="#">in</a>
-      <a class="social-btn" href="#">ig</a>
-      <a class="social-btn" href="#">yt</a>
-    </div>
-  </div>
+  <div class="footer-right">© 2026 LiveDish AI — All Rights Reserved</div>
 </footer>
 
 <script>
-// CURSOR
-const cursor = document.getElementById('cursor');
-const cursorRing = document.getElementById('cursorRing');
+/* CURSOR */
+const dot=document.getElementById('dot'),ring=document.getElementById('ring');
 let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX;my=e.clientY;
-  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+document.querySelectorAll('button,a,.chip,.nav-dot').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('expand'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('expand'));
 });
-function animateRing(){
-  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
-  cursorRing.style.left=rx+'px';cursorRing.style.top=ry+'px';
-  requestAnimationFrame(animateRing);
-}
-animateRing();
+(function animRing(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)})();
 
-// DISH CAROUSEL
+/* PARTICLES */
+const canvas=document.getElementById('particleCanvas'),ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+class P{
+  constructor(){this.reset()}
+  reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1.4+.3;this.vx=(Math.random()-.5)*.25;this.vy=(Math.random()-.5)*.25;this.a=Math.random()*.45+.05}
+  update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset()}
+  draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(201,168,76,${this.a})`;ctx.fill()}
+}
+const particles=Array.from({length:100},()=>new P());
+function animP(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw()});requestAnimationFrame(animP)}
+animP();
+
+/* NAV */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60));
+
+/* DISHES */
 const dishes=[
-  {emoji:'🍣',name:'Sushi Platter',price:'₹890',meta:['🔥 620 kcal','⭐ 4.9','🚫 Gluten-Free']},
-  {emoji:'🍔',name:'Smash Burger',price:'₹420',meta:['🔥 890 kcal','⭐ 4.7','🌿 Grass-Fed']},
-  {emoji:'🍕',name:'Truffle Pizza',price:'₹780',meta:['🔥 740 kcal','⭐ 4.8','🧀 Vegetarian']},
-  {emoji:'🍜',name:'Wagyu Ramen',price:'₹680',meta:['🔥 560 kcal','⭐ 4.9','🌶 Spicy']},
-  {emoji:'🍛',name:'Moroccan Tagine',price:'₹540',meta:['🔥 480 kcal','⭐ 4.6','🥗 Halal']},
+  {emoji:'🍣',name:'Sushi Omakase',price:'₹1,290',tags:['🔥 580 kcal','⭐ 4.9','🌿 Raw','🚫 Gluten-Free']},
+  {emoji:'🍔',name:'Truffle Smash Burger',price:'₹680',tags:['🔥 920 kcal','⭐ 4.8','🧀 Cheese','🥩 Wagyu']},
+  {emoji:'🍕',name:'Truffle White Pizza',price:'₹890',tags:['🔥 740 kcal','⭐ 4.7','🍄 Mushroom','🧄 Garlic']},
+  {emoji:'🍜',name:'Tonkotsu Ramen',price:'₹540',tags:['🔥 680 kcal','⭐ 4.9','🥚 Soft Egg','🌶 Spicy']},
+  {emoji:'🥗',name:'Caesar Deluxe',price:'₹420',tags:['🔥 280 kcal','⭐ 4.6','🌿 Vegan','💪 Protein']},
+  {emoji:'🍛',name:'Lamb Rogan Josh',price:'₹780',tags:['🔥 650 kcal','⭐ 4.8','🌶 Bold Spice','🫙 Slow Cooked']}
 ];
-let idx=0;
-const dotsEl=document.getElementById('carouselDots');
-dishes.forEach((_,i)=>{
-  const d=document.createElement('div');
-  d.className='dot'+(i===0?' active':'');
-  dotsEl.appendChild(d);
-});
-function updateDots(){
-  document.querySelectorAll('.dot').forEach((d,i)=>{
-    d.classList.toggle('active',i===idx);
-  });
-}
-function nextDish(){
-  idx=(idx+1)%dishes.length;
-  const d=dishes[idx];
-  const emojiEl=document.getElementById('dishEmoji');
-  const titleEl=document.getElementById('dishTitle');
-  const metaEl=document.getElementById('dishMeta');
-  const btnEl=document.getElementById('orderBtn');
-  emojiEl.style.opacity='0';emojiEl.style.transform='scale(0.7)';
-  titleEl.style.opacity='0';
+let current=0,autoPlay;
+function switchDish(i,chipEl){
+  clearInterval(autoPlay);
+  current=i;
+  if(chipEl){
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active-chip'));
+    chipEl.classList.add('active-chip');
+  } else {
+    document.querySelectorAll('.chip').forEach((c,idx)=>c.classList.toggle('active-chip',idx===i));
+  }
+  const d=dishes[i];
+  const em=document.getElementById('dishEmoji');
+  em.style.opacity='0';em.style.transform='scale(.75)';
   setTimeout(()=>{
-    emojiEl.textContent=d.emoji;
-    titleEl.textContent=d.name;
-    metaEl.innerHTML=d.meta.map(m=>`<span class="tag-pill">${m}</span>`).join('');
-    btnEl.textContent=`Add to Order — ${d.price}`;
-    emojiEl.style.opacity='1';emojiEl.style.transform='';
-    titleEl.style.opacity='1';
-  },280);
-  updateDots();
+    em.textContent=d.emoji;
+    document.getElementById('dishName').textContent=d.name;
+    document.getElementById('dishPrice').textContent=d.price;
+    document.getElementById('dishMeta').innerHTML=d.tags.map(t=>`<span class="meta-tag">${t}</span>`).join('');
+    document.querySelectorAll('.nav-dot').forEach((dot,idx)=>dot.classList.toggle('active',idx===i));
+    em.style.opacity='1';em.style.transform='';
+  },260);
+  startAuto();
 }
-setInterval(nextDish,3200);
+function startAuto(){autoPlay=setInterval(()=>{current=(current+1)%dishes.length;switchDish(current,null)},3800)}
+startAuto();
 
-// SCROLL REVEAL
-const revealEls=document.querySelectorAll('.reveal');
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach((e,i)=>{
+/* OBSERVERS */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
+},{threshold:.12});
+document.querySelectorAll('.feat,.ar-left').forEach(el=>obs.observe(el));
+
+const stepObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
     if(e.isIntersecting){
-      setTimeout(()=>e.target.classList.add('visible'),i*60);
-      observer.unobserve(e.target);
+      document.querySelectorAll('.step').forEach((s,i)=>setTimeout(()=>s.classList.add('visible'),i*140));
+      stepObs.disconnect();
     }
   });
-},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
-revealEls.forEach(el=>observer.observe(el));
+},{threshold:.15});
+document.querySelectorAll('.step').forEach(s=>stepObs.observe(s));
+
+/* COUNT UP */
+const cObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target,target=+el.dataset.target;
+    let start=null;
+    const run=ts=>{
+      if(!start)start=ts;
+      const p=Math.min((ts-start)/1900,1);
+      const ease=1-Math.pow(1-p,3);
+      el.textContent=Math.round(ease*target).toLocaleString();
+      if(p<1)requestAnimationFrame(run);
+    };
+    requestAnimationFrame(run);
+    cObs.unobserve(el);
+  });
+},{threshold:.5});
+document.querySelectorAll('.count-up').forEach(el=>cObs.observe(el));
+
+/* HERO STATS */
+setTimeout(()=>{
+  document.querySelectorAll('.hero-count').forEach(el=>{
+    const target=+el.dataset.target;let s=null;
+    const run=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/1600,1);const e=1-Math.pow(1-p,3);el.textContent=Math.round(e*target).toLocaleString();if(p<1)requestAnimationFrame(run)};
+    requestAnimationFrame(run);
+  });
+},1400);
 </script>
 </body>
 </html>
