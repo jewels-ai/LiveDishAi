@@ -488,41 +488,67 @@ nav{
   gap:24px;
 }
 
-.feature{
+ .feature{
   background:rgba(18,20,35,.65);
   backdrop-filter:blur(18px);
   border:1px solid rgba(255,255,255,.05);
   border-radius:30px;
   padding:40px;
-  transition:.4s;
+  transition:
+  transform .6s cubic-bezier(.2,.8,.2,1),
+  border-color .4s,
+  box-shadow .4s,
+  opacity .8s ease;
+
+  opacity:0;
+  transform:translateY(80px) scale(.96);
+
+  position:relative;
+  overflow:hidden;
 }
+
+/* ACTIVE STATE */
+
+.feature.show{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+
+/* PREMIUM HOVER */
 
 .feature:hover{
-  transform:translateY(-10px);
-  border-color:rgba(201,168,76,.2);
+  transform:translateY(-12px);
+  border-color:rgba(201,168,76,.25);
+
+  box-shadow:
+  0 20px 50px rgba(0,0,0,.45),
+  0 0 40px rgba(201,168,76,.08);
 }
 
-.feature-icon{
-  width:70px;
-  height:70px;
-  border-radius:20px;
-  background:rgba(201,168,76,.08);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:30px;
-  margin-bottom:24px;
+/* GOLD LIGHT EFFECT */
+
+.feature::before{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  border-radius:30px;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(201,168,76,.15),
+    transparent 30%,
+    transparent 70%,
+    rgba(201,168,76,.08)
+  );
+
+  opacity:0;
+  transition:.5s;
+  pointer-events:none;
 }
 
-.feature h3{
-  font-family:'Syne',sans-serif;
-  margin-bottom:14px;
-  font-size:24px;
-}
-
-.feature p{
-  color:var(--muted);
-  line-height:1.8;
+.feature:hover::before{
+  opacity:1;
 }
 
 /* CTA */
@@ -1138,6 +1164,39 @@ document.getElementById("foodTags").innerHTML =
 foods[current].tags.map(tag=>`<span>${tag}</span>`).join('');
 
 },3500);
+
+
+/* FEATURE REVEAL ANIMATION */
+
+const features = document.querySelectorAll('.feature');
+
+const revealFeatures = () => {
+
+  const triggerBottom = window.innerHeight * 0.88;
+
+  features.forEach((feature,index)=>{
+
+    const rect = feature.getBoundingClientRect();
+
+    if(rect.top < triggerBottom){
+
+      setTimeout(()=>{
+
+        feature.classList.add('show');
+
+      }, index * 120);
+
+    }
+
+  });
+
+};
+
+window.addEventListener('scroll', revealFeatures);
+
+revealFeatures();
+
+
 
 </script>
 
