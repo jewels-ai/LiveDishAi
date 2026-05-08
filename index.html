@@ -466,42 +466,21 @@ nav{
 
 /* FEATURES */
 
-.features{
-  padding:130px 6%;
-}
-
-.section-title{
-  text-align:center;
-  margin-bottom:80px;
-}
-
-.section-title h2{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(44px,6vw,72px);
-  line-height:1;
-  letter-spacing:-2px;
-}
-
-.feature-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:24px;
-}
-
- .feature{
+.feature{
   background:rgba(18,20,35,.65);
   backdrop-filter:blur(18px);
   border:1px solid rgba(255,255,255,.05);
   border-radius:30px;
   padding:40px;
+
   transition:
-  transform .6s cubic-bezier(.2,.8,.2,1),
+  opacity .7s ease,
+  transform .7s ease,
   border-color .4s,
-  box-shadow .4s,
-  opacity .8s ease;
+  box-shadow .4s;
 
   opacity:0;
-  transform:translateY(80px) scale(.96);
+  transform:translateY(60px);
 
   position:relative;
   overflow:hidden;
@@ -511,13 +490,14 @@ nav{
 
 .feature.show{
   opacity:1;
-  transform:translateY(0) scale(1);
+  transform:translateY(0);
 }
 
-/* PREMIUM HOVER */
+/* HOVER */
 
 .feature:hover{
-  transform:translateY(-12px);
+  transform:translateY(-8px);
+
   border-color:rgba(201,168,76,.25);
 
   box-shadow:
@@ -525,7 +505,7 @@ nav{
   0 0 40px rgba(201,168,76,.08);
 }
 
-/* GOLD LIGHT EFFECT */
+/* LIGHT EFFECT */
 
 .feature::before{
   content:'';
@@ -536,10 +516,10 @@ nav{
   background:
   linear-gradient(
     135deg,
-    rgba(201,168,76,.15),
-    transparent 30%,
+    rgba(201,168,76,.12),
+    transparent 35%,
     transparent 70%,
-    rgba(201,168,76,.08)
+    rgba(201,168,76,.05)
   );
 
   opacity:0;
@@ -550,6 +530,7 @@ nav{
 .feature:hover::before{
   opacity:1;
 }
+
 
 /* CTA */
 
