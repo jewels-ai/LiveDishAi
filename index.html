@@ -8,6 +8,32 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 
 <style>
+  /* HERO */
+
+.hero-banner{
+  width:100vw;
+  margin:0 calc(-50vw + 50%) 60px;
+  border-radius:0;
+  overflow:hidden;
+  border-top:1px solid rgba(201,168,76,.12);
+  border-bottom:1px solid rgba(201,168,76,.12);
+  box-shadow:
+  0 30px 80px rgba(0,0,0,.45),
+  0 0 60px rgba(201,168,76,.08);
+  animation:fadeUp 1s ease;
+}
+
+.hero-banner img{
+  width:100%;
+  height:auto;
+  display:block;
+  object-fit:cover;
+}
+
+.hero{
+  min-height:100vh;
+  ...
+}
 
 *{
   margin:0;
@@ -549,11 +575,71 @@ nav{
   opacity:1;
 }
 
+.feature:hover::before{
+  opacity:1;
+}
+
+/* NEW FEATURE GRID STYLES */
+
+.features{
+  padding:100px 6% 40px;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:70px;
+}
+
+.section-title h2{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(42px,6vw,72px);
+  line-height:1;
+  letter-spacing:-2px;
+}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:28px;
+}
+
+.feature-media{
+  width:100%;
+  height:220px;
+  border-radius:22px;
+  overflow:hidden;
+  margin-bottom:24px;
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.feature-media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .7s ease;
+}
+
+.feature:hover .feature-media img{
+  transform:scale(1.08);
+}
+
+.feature h3{
+  font-family:'Syne',sans-serif;
+  font-size:24px;
+  margin-bottom:14px;
+}
+
+.feature p{
+  color:var(--muted);
+  line-height:1.8;
+}
+
 
 /* CTA */
 
 .cta{
-  padding:140px 6%;
+  padding:40px 6% 100px;
+  margin-top:-40px;
 }
 
 .cta-box{
@@ -771,89 +857,23 @@ footer{
 
 <!-- HERO -->
 
+<!-- HERO -->
+
 <section class="hero">
 
-  <div class="hero-content">
+  <div class="hero-banner">
+    <img src="https://jewels-ai.odoo.com/web/image/1978-9b23c020/BANNER.webp" alt="LiveDish AI Banner">
+  </div>
 
-    <div class="hero-badge">
-      ✦ THE FUTURE OF RESTAURANT EXPERIENCE
-    </div>
+ 
 
-    <h1>
-      LiveDish-AI </h1><h2>transforms your restaurant menus into immersive AR experiences </h2>
-
-    <h2>
-      Guests scan, preview life-size dishes, and order with more confidence —
-      helping restaurants increase sales, engagement, and customer satisfaction.
-    </h2>
-
-    <div class="hero-buttons">
-
-      <button class="btn-primary">
-        Start Live Demo →
-      </button>
-
-      <button class="btn-secondary">
-        Watch Experience
-      </button>
-
-    </div>
+    
 
   </div>
 
 </section>
 
-<!-- PHONE -->
 
-<section class="phone-section">
-
-  <div class="phone-wrap">
-
-    <div class="phone-glow"></div>
-
-    <div class="phone">
-
-      <div class="notch"></div>
-
-      <div class="phone-content">
-
-        <div class="phone-top">
-          <h3 style="color:var(--gold)">LIVEDISH AR</h3>
-          <div class="live-pill">● LIVE</div>
-        </div>
-
-        <div class="scan-box">
-
-          <div class="scan-line"></div>
-
-          <div class="food" id="foodEmoji">
-            🍣
-          </div>
-
-        </div>
-
-        <div class="food-name" id="foodName">
-          Sushi Omakase
-        </div>
-
-        <div class="tags" id="foodTags">
-          <span>🔥 580 kcal</span>
-          <span>⭐ 4.9</span>
-          <span>🌿 Fresh</span>
-          <span>🚫 Gluten-Free</span>
-        </div>
-
-        <button class="order-btn" id="priceBtn">
-          Add to Order — ₹1290
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
 
 <!-- CAROUSEL -->
 
@@ -876,7 +896,7 @@ footer{
 
     <!-- ITALIAN -->
     <div class="card">
-      <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop"/>
+      <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop"/>
       <div class="card-content">
         <h3>Italian Cuisine</h3>
         <p>Showcase authentic pizzas, pasta, and luxury Italian dining visually.</p>
@@ -1010,84 +1030,151 @@ footer{
 
   <div class="feature-grid">
 
+    <!-- SALES -->
+
     <div class="feature">
-      <div class="feature-icon">📈</div>
+
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200&auto=format&fit=crop">
+      </div>
+
       <h3>Increase Food Sales</h3>
+
       <p>
         Customers order more confidently after viewing dishes in realistic AR.
       </p>
+
     </div>
 
+    <!-- SOCIAL -->
+
     <div class="feature">
-      <div class="feature-icon">📸</div>
+
+      <div class="feature-media">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
+      </div>
+
       <h3>Boost Social Media Sharing</h3>
+
       <p>
         Guests naturally share AR dining experiences on Instagram and TikTok.
       </p>
+
     </div>
 
+    <!-- CONFUSION -->
+
     <div class="feature">
-      <div class="feature-icon">🍽️</div>
+
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?q=80&w=1200&auto=format&fit=crop">
+      </div>
+
       <h3>Reduce Order Confusion</h3>
+
       <p>
         Guests clearly understand portion size and presentation before ordering.
       </p>
+
     </div>
 
+    <!-- PREMIUM -->
+
     <div class="feature">
-      <div class="feature-icon">⭐</div>
+
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200&auto=format&fit=crop">
+      </div>
+
       <h3>Premium Brand Experience</h3>
+
       <p>
         Create a futuristic dining atmosphere customers will remember.
       </p>
+
     </div>
 
+    <!-- NO APP -->
+
     <div class="feature">
-      <div class="feature-icon">⚡</div>
+
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop">
+      </div>
+
       <h3>No App Required</h3>
+
       <p>
         Customers instantly access AR menus directly from their browser.
       </p>
+
     </div>
 
+    <!-- GLOBAL -->
+
     <div class="feature">
-      <div class="feature-icon">🌍</div>
+
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop">
+      </div>
+
       <h3>Supports Global Cuisines</h3>
+
       <p>
         Perfect for Japanese, Korean, Indian, Italian, Chinese, and themed restaurants.
       </p>
+
     </div>
 
+    <!-- UPSELL -->
+
     <div class="feature">
-      <div class="feature-icon">💡</div>
+
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=1200&auto=format&fit=crop">
+      </div>
+
       <h3>Increase Upselling</h3>
+
       <p>
         Highlight premium dishes visually to encourage higher-value orders.
       </p>
+
     </div>
 
+    <!-- VIRAL -->
+
     <div class="feature">
-      <div class="feature-icon">🎥</div>
+
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1200&auto=format&fit=crop">
+      </div>
+
       <h3>Create Viral Moments</h3>
+
       <p>
         Interactive AR dishes attract customer attention and online engagement.
       </p>
+
     </div>
 
+    <!-- ANALYTICS -->
+
     <div class="feature">
-      <div class="feature-icon">📊</div>
+
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop">
+      </div>
+
       <h3>Restaurant Analytics</h3>
+
       <p>
         Track which dishes customers preview and interact with the most.
       </p>
+
     </div>
 
-    <div class="feature">
-      <div class="feature-icon">🚀</div>
-      <h3>Future-Ready Technology</h3>
-      <p>
-        Position your restaurant as an innovative dining destination.
-      </p>
+   
     </div>
 
   </div>
