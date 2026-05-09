@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>LiveDish AI — Futuristic AR Dining</title>
+<title>LiveDish AI — Premium AR Dining</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 
@@ -13,16 +13,18 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
 :root{
   --gold:#C9A84C;
-  --gold2:#F4D98A;
+  --gold2:#E8C97A;
   --dark:#06070D;
-  --dark2:#0F121B;
-  --card:rgba(18,20,35,.72);
-  --text:#F8F8FC;
-  --muted:#96A0BD;
+  --dark2:#0D0F18;
+  --dark3:#131624;
+  --text:#F7F7FB;
+  --muted:#8A92B2;
 }
 
 html{
@@ -34,102 +36,88 @@ body{
   background:var(--dark);
   color:var(--text);
   overflow-x:hidden;
-  position:relative;
 }
 
 /* BACKGROUND */
 
-body::before{
-  content:'';
+.bg{
   position:fixed;
   inset:0;
-  z-index:-5;
-
+  z-index:-3;
   background:
-  radial-gradient(circle at 10% 10%, rgba(201,168,76,.10), transparent 25%),
-  radial-gradient(circle at 90% 80%, rgba(201,168,76,.08), transparent 25%),
+  radial-gradient(circle at top left, rgba(201,168,76,.12), transparent 25%),
+  radial-gradient(circle at bottom right, rgba(201,168,76,.08), transparent 25%),
   linear-gradient(180deg,#06070D,#090B13);
-
-  animation:bgMove 14s infinite alternate ease-in-out;
-}
-
-@keyframes bgMove{
-  from{
-    transform:scale(1) translateY(0px);
-  }
-  to{
-    transform:scale(1.08) translateY(-20px);
-  }
 }
 
 .grid{
   position:fixed;
   inset:0;
-  z-index:-4;
-
+  z-index:-2;
   background-image:
   linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
   linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-
   background-size:70px 70px;
-
-  mask-image:radial-gradient(circle at center, black 30%, transparent 80%);
+  mask-image:radial-gradient(circle at center, black 20%, transparent 80%);
 }
 
-/* CURSOR GLOW */
+/* FLOATING PARTICLES */
 
-.cursor-glow{
-  position:fixed;
-  width:500px;
-  height:500px;
+.particles span{
+  position:absolute;
+  width:4px;
+  height:4px;
+  background:rgba(201,168,76,.5);
   border-radius:50%;
-  pointer-events:none;
-  z-index:-2;
+  animation:floatParticle linear infinite;
+}
 
-  background:
-  radial-gradient(
-    circle,
-    rgba(201,168,76,.15),
-    transparent 70%
-  );
+.particles span:nth-child(1){
+  left:10%;
+  animation-duration:12s;
+}
 
-  transform:translate(-50%,-50%);
+.particles span:nth-child(2){
+  left:30%;
+  animation-duration:18s;
+}
+
+.particles span:nth-child(3){
+  left:50%;
+  animation-duration:15s;
+}
+
+.particles span:nth-child(4){
+  left:70%;
+  animation-duration:10s;
+}
+
+.particles span:nth-child(5){
+  left:90%;
+  animation-duration:20s;
 }
 
 /* NAV */
 
 nav{
   position:fixed;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  width:92%;
-  max-width:1300px;
-  height:74px;
-
+  top:0;
+  left:0;
+  right:0;
+  height:80px;
   display:flex;
-  align-items:center;
   justify-content:space-between;
-
-  padding:0 28px;
-
+  align-items:center;
+  padding:0 6%;
   z-index:1000;
-
-  border:1px solid rgba(255,255,255,.06);
-
-  background:rgba(12,14,22,.45);
-
-  backdrop-filter:blur(24px);
-
-  border-radius:24px;
-
-  box-shadow:
-  0 10px 40px rgba(0,0,0,.4);
+  backdrop-filter:blur(18px);
+  background:rgba(5,6,10,.6);
+  border-bottom:1px solid rgba(255,255,255,.05);
 }
 
 .logo{
   font-family:'Syne',sans-serif;
-  font-size:28px;
+  font-size:24px;
   font-weight:800;
 }
 
@@ -139,12 +127,12 @@ nav{
 
 .nav-links{
   display:flex;
-  gap:28px;
+  gap:34px;
 }
 
 .nav-links a{
-  text-decoration:none;
   color:var(--muted);
+  text-decoration:none;
   transition:.3s;
   font-size:14px;
 }
@@ -154,26 +142,31 @@ nav{
 }
 
 .nav-btn{
-  padding:14px 26px;
+  padding:14px 28px;
   border:none;
   border-radius:60px;
-
-  background:
-  linear-gradient(
-    135deg,
-    var(--gold),
-    var(--gold2)
-  );
-
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
   color:black;
   font-weight:700;
   cursor:pointer;
-
-  transition:.4s;
+  position:relative;
+  overflow:hidden;
 }
 
-.nav-btn:hover{
-  transform:translateY(-3px);
+.nav-btn::after{
+  content:'';
+  position:absolute;
+  top:-120%;
+  left:-40%;
+  width:40%;
+  height:300%;
+  background:rgba(255,255,255,.3);
+  transform:rotate(25deg);
+  transition:.8s;
+}
+
+.nav-btn:hover::after{
+  left:130%;
 }
 
 /* HERO */
@@ -184,52 +177,37 @@ nav{
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:180px 6% 120px;
+  padding:140px 6% 80px;
   position:relative;
-  overflow:hidden;
-}
-
-.hero-video{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  opacity:.15;
 }
 
 .hero-content{
-  position:relative;
-  z-index:2;
   max-width:1000px;
 }
 
 .hero-badge{
   display:inline-flex;
-  gap:10px;
   align-items:center;
-
-  padding:12px 22px;
-
+  gap:10px;
+  padding:10px 20px;
   border-radius:60px;
-
-  border:1px solid rgba(201,168,76,.2);
-
-  background:rgba(201,168,76,.06);
-
+  border:1px solid rgba(201,168,76,.25);
+  background:rgba(201,168,76,.05);
   color:var(--gold);
-
-  margin-bottom:30px;
-
   font-size:12px;
   letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:30px;
+  animation:fadeUp 1s ease;
 }
 
 .hero h1{
   font-family:'Syne',sans-serif;
-  font-size:clamp(60px,8vw,120px);
-  line-height:.92;
-  letter-spacing:-4px;
+  font-size:clamp(58px,8vw,110px);
+  line-height:.96;
+  letter-spacing:-2px;
+  font-weight:700;
+  animation:fadeUp 1s ease;
 }
 
 .hero h1 span{
@@ -238,17 +216,18 @@ nav{
 }
 
 .hero p{
+  max-width:700px;
   margin:30px auto;
-  max-width:760px;
-  line-height:1.9;
   color:var(--muted);
   font-size:18px;
+  line-height:1.9;
+  animation:fadeUp 1.2s ease;
 }
 
 .hero-buttons{
   display:flex;
   justify-content:center;
-  gap:20px;
+  gap:18px;
   flex-wrap:wrap;
   margin-top:40px;
 }
@@ -257,40 +236,28 @@ nav{
   padding:18px 36px;
   border:none;
   border-radius:60px;
-
-  background:
-  linear-gradient(
-    135deg,
-    var(--gold),
-    var(--gold2)
-  );
-
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
   color:black;
   font-weight:700;
   cursor:pointer;
-
-  transition:.35s;
+  transition:.4s;
+  position:relative;
+  overflow:hidden;
 }
 
 .btn-primary:hover{
-  transform:
-  translateY(-5px)
-  scale(1.03);
-
-  box-shadow:
-  0 20px 50px rgba(201,168,76,.3);
+  transform:translateY(-4px);
+  box-shadow:0 20px 50px rgba(201,168,76,.25);
 }
 
 .btn-secondary{
   padding:18px 36px;
   border-radius:60px;
-  border:1px solid rgba(255,255,255,.1);
-
+  border:1px solid rgba(255,255,255,.12);
   background:transparent;
   color:white;
-
   cursor:pointer;
-  transition:.35s;
+  transition:.4s;
 }
 
 .btn-secondary:hover{
@@ -298,34 +265,13 @@ nav{
   color:var(--gold);
 }
 
-/* STATS */
-
-.hero-stats{
-  margin-top:70px;
-
-  display:flex;
-  justify-content:center;
-  gap:70px;
-  flex-wrap:wrap;
-}
-
-.hero-stats h3{
-  font-size:44px;
-  font-family:'Syne',sans-serif;
-  color:var(--gold);
-}
-
-.hero-stats span{
-  color:var(--muted);
-  font-size:14px;
-}
-
-/* PHONE */
+/* PHONE DEMO */
 
 .phone-section{
   padding:120px 6%;
   display:flex;
   justify-content:center;
+  align-items:center;
 }
 
 .phone-wrap{
@@ -334,45 +280,25 @@ nav{
 
 .phone-glow{
   position:absolute;
-  width:550px;
-  height:550px;
+  width:500px;
+  height:500px;
   border-radius:50%;
-
-  background:
-  radial-gradient(
-    circle,
-    rgba(201,168,76,.18),
-    transparent 70%
-  );
-
+  background:radial-gradient(circle, rgba(201,168,76,.15), transparent 70%);
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-
-  animation:pulseGlow 5s infinite;
+  animation:pulseGlow 4s infinite;
 }
 
 .phone{
-  width:330px;
-  height:680px;
-
+  width:320px;
+  height:660px;
   border-radius:50px;
-
-  background:
-  linear-gradient(
-    180deg,
-    #101321,
-    #090B14
-  );
-
+  background:linear-gradient(180deg,#101321,#090B14);
   border:1px solid rgba(255,255,255,.08);
-
   overflow:hidden;
   position:relative;
-
-  box-shadow:
-  0 50px 100px rgba(0,0,0,.7);
-
+  box-shadow:0 50px 100px rgba(0,0,0,.8);
   animation:phoneFloat 5s ease-in-out infinite;
 }
 
@@ -380,190 +306,146 @@ nav{
   width:120px;
   height:28px;
   background:black;
-
-  border-radius:0 0 20px 20px;
-
+  border-radius:0 0 18px 18px;
   position:absolute;
   left:50%;
   transform:translateX(-50%);
+  top:0;
 }
 
 .phone-content{
-  padding:36px 24px;
+  padding:36px 22px;
+}
+
+.phone-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.live-pill{
+  padding:6px 14px;
+  border-radius:50px;
+  border:1px solid rgba(201,168,76,.25);
+  color:var(--gold);
+  font-size:11px;
+  background:rgba(201,168,76,.05);
 }
 
 .scan-box{
-  height:340px;
+  height:310px;
   border-radius:30px;
-
-  border:1px solid rgba(201,168,76,.15);
-
+  border:1px solid rgba(201,168,76,.12);
   position:relative;
-
   display:flex;
-  align-items:center;
   justify-content:center;
-
+  align-items:center;
   overflow:hidden;
-
-  margin-top:30px;
-
   background:rgba(255,255,255,.02);
-}
-
-.qr-overlay{
-  position:absolute;
-  inset:0;
-
-  background:
-  repeating-linear-gradient(
-    transparent 0 10px,
-    rgba(201,168,76,.03) 10px 20px
-  );
-
-  animation:qrMove 2s linear infinite;
 }
 
 .scan-line{
   position:absolute;
   width:90%;
   height:2px;
-
-  background:
-  linear-gradient(
-    90deg,
-    transparent,
-    var(--gold),
-    transparent
-  );
-
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
   left:5%;
-
   box-shadow:0 0 20px var(--gold);
-
   animation:scan 2.5s infinite;
 }
 
 .food{
-  font-size:110px;
-  z-index:2;
-
+  font-size:100px;
   animation:dishFloat 3s infinite ease-in-out;
 }
 
 .food-name{
   text-align:center;
-  margin-top:26px;
-
-  font-size:30px;
   font-family:'Syne',sans-serif;
+  font-size:30px;
+  margin-top:28px;
 }
 
 .tags{
   display:flex;
-  flex-wrap:wrap;
   justify-content:center;
+  flex-wrap:wrap;
   gap:10px;
   margin-top:18px;
 }
 
 .tags span{
   padding:8px 14px;
-  border-radius:60px;
-
+  border-radius:50px;
   border:1px solid rgba(201,168,76,.15);
-
-  background:rgba(201,168,76,.06);
-
+  background:rgba(201,168,76,.05);
   color:var(--gold2);
-
   font-size:12px;
 }
 
 .order-btn{
   width:100%;
   padding:18px;
-  margin-top:26px;
-
   border:none;
   border-radius:60px;
-
-  background:
-  linear-gradient(
-    135deg,
-    var(--gold),
-    var(--gold2)
-  );
-
+  margin-top:26px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
   color:black;
-  font-weight:700;
   font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.4s;
 }
 
-/* SECTION */
-
-.section{
-  padding:130px 6%;
+.order-btn:hover{
+  transform:scale(1.02);
 }
 
-.section-title{
+/* CAROUSEL */
+
+.carousel-section{
+  padding:130px 0;
+  overflow:hidden;
+}
+
+.carousel-title{
   text-align:center;
-  margin-bottom:70px;
+  margin-bottom:60px;
 }
 
-.section-title h2{
-  font-size:clamp(42px,6vw,78px);
+.carousel-title h2{
   font-family:'Syne',sans-serif;
-  line-height:1;
+  font-size:clamp(42px,6vw,72px);
   letter-spacing:-2px;
 }
 
-/* CARDS */
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:28px;
+.carousel{
+  display:flex;
+  gap:30px;
+  width:max-content;
+  animation:slide 28s linear infinite;
 }
 
 .card{
-  background:var(--card);
-
+  width:340px;
+  background:rgba(18,20,35,.65);
+  backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.05);
-
   border-radius:30px;
-
   overflow:hidden;
-
-  backdrop-filter:blur(18px);
-
-  transition:.45s;
-
-  transform-style:preserve-3d;
+  transition:.4s;
 }
 
 .card:hover{
-  transform:
-  rotateX(6deg)
-  rotateY(-6deg)
-  translateY(-10px);
-
-  border-color:rgba(201,168,76,.25);
-
-  box-shadow:
-  0 30px 60px rgba(0,0,0,.45);
+  transform:translateY(-10px);
+  border-color:rgba(201,168,76,.2);
 }
 
 .card img{
   width:100%;
   height:240px;
   object-fit:cover;
-
-  transition:.5s;
-}
-
-.card:hover img{
-  transform:scale(1.08);
 }
 
 .card-content{
@@ -571,161 +453,84 @@ nav{
 }
 
 .card h3{
-  font-size:28px;
   font-family:'Syne',sans-serif;
-  margin-bottom:14px;
+  margin-bottom:12px;
+  font-size:24px;
 }
 
 .card p{
   color:var(--muted);
   line-height:1.8;
+  font-size:14px;
 }
 
 /* FEATURES */
 
-.feature-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:30px;
-}
-
 .feature{
-  padding:40px;
-  border-radius:30px;
-
-  background:var(--card);
-
-  border:1px solid rgba(255,255,255,.05);
-
+  background:rgba(18,20,35,.65);
   backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:30px;
+  padding:40px;
 
-  transition:.4s;
+  transition:
+  opacity .7s ease,
+  transform .7s ease,
+  border-color .4s,
+  box-shadow .4s;
+
+  opacity:0;
+  transform:translateY(60px);
+
+  position:relative;
+  overflow:hidden;
 }
+
+/* ACTIVE STATE */
+
+.feature.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* HOVER */
 
 .feature:hover{
-  transform:translateY(-10px);
+  transform:translateY(-8px);
 
   border-color:rgba(201,168,76,.25);
 
   box-shadow:
-  0 20px 50px rgba(0,0,0,.45);
+  0 20px 50px rgba(0,0,0,.45),
+  0 0 40px rgba(201,168,76,.08);
 }
 
-.feature-icon{
-  width:72px;
-  height:72px;
+/* LIGHT EFFECT */
 
-  border-radius:22px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:32px;
-
-  margin-bottom:24px;
-
-  background:rgba(255,255,255,.04);
-
-  border:1px solid rgba(255,255,255,.08);
-}
-
-.feature h3{
-  font-size:24px;
-  margin-bottom:14px;
-  font-family:'Syne',sans-serif;
-}
-
-.feature p{
-  color:var(--muted);
-  line-height:1.8;
-}
-
-/* VOICE AI */
-
-.voice-box{
-  max-width:700px;
-  margin:auto;
-
-  padding:60px;
-
-  border-radius:40px;
-
-  background:var(--card);
-
-  border:1px solid rgba(255,255,255,.06);
-
-  text-align:center;
-}
-
-.wave{
-  width:180px;
-  height:180px;
-  margin:auto auto 30px;
-
-  border-radius:50%;
-
-  border:2px solid rgba(201,168,76,.25);
-
-  animation:pulseWave 2s infinite;
-}
-
-.voice-box p{
-  margin-bottom:30px;
-  color:var(--muted);
-  font-size:20px;
-}
-
-/* DASHBOARD */
-
-.dashboard{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:30px;
-}
-
-.metric{
-  padding:40px;
+.feature::before{
+  content:'';
+  position:absolute;
+  inset:-1px;
   border-radius:30px;
 
-  background:var(--card);
+  background:
+  linear-gradient(
+    135deg,
+    rgba(201,168,76,.12),
+    transparent 35%,
+    transparent 70%,
+    rgba(201,168,76,.05)
+  );
 
-  border:1px solid rgba(255,255,255,.05);
-
-  text-align:center;
+  opacity:0;
+  transition:.5s;
+  pointer-events:none;
 }
 
-.metric h3{
-  font-size:54px;
-  color:var(--gold);
-  font-family:'Syne',sans-serif;
+.feature:hover::before{
+  opacity:1;
 }
 
-.metric p{
-  margin-top:10px;
-  color:var(--muted);
-}
-
-/* MARQUEE */
-
-.marquee{
-  overflow:hidden;
-  white-space:nowrap;
-  position:relative;
-}
-
-.marquee-track{
-  display:inline-flex;
-  gap:80px;
-
-  animation:marquee 18s linear infinite;
-}
-
-.marquee span{
-  font-size:34px;
-  color:rgba(255,255,255,.2);
-  font-family:'Syne',sans-serif;
-}
 
 /* CTA */
 
@@ -736,105 +541,127 @@ nav{
 .cta-box{
   padding:100px 40px;
   border-radius:40px;
-
-  background:
-  linear-gradient(
-    180deg,
-    #0D101B,
-    #090B13
-  );
-
+  background:linear-gradient(180deg,#0D101B,#090B13);
   border:1px solid rgba(201,168,76,.1);
-
   text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.cta-box::before{
+  content:'AR';
+  position:absolute;
+  font-size:260px;
+  font-family:'Syne',sans-serif;
+  color:rgba(201,168,76,.03);
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
 }
 
 .cta h2{
-  font-size:clamp(46px,6vw,84px);
+  position:relative;
+  z-index:2;
   font-family:'Syne',sans-serif;
+  font-size:clamp(42px,6vw,72px);
   line-height:1;
+  letter-spacing:-2px;
 }
 
 .cta p{
-  max-width:700px;
-  margin:30px auto 40px;
+  position:relative;
+  z-index:2;
   color:var(--muted);
+  max-width:700px;
+  margin:26px auto 40px;
   line-height:1.9;
 }
 
 /* FOOTER */
 
 footer{
-  padding:50px;
+  padding:40px 6%;
+  border-top:1px solid rgba(255,255,255,.05);
   text-align:center;
   color:var(--muted);
-  border-top:1px solid rgba(255,255,255,.05);
 }
 
 /* ANIMATION */
+
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(30px);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
+}
+
+@keyframes dishFloat{
+  0%,100%{
+    transform:translateY(0px) rotate(0deg);
+  }
+  50%{
+    transform:translateY(-12px) rotate(4deg);
+  }
+}
 
 @keyframes phoneFloat{
   0%,100%{
     transform:translateY(0px);
   }
   50%{
-    transform:translateY(-12px);
+    transform:translateY(-10px);
+  }
+}
+
+@keyframes scan{
+  0%{
+    top:10px;
+    opacity:0;
+  }
+  20%{
+    opacity:1;
+  }
+  80%{
+    opacity:1;
+  }
+  100%{
+    top:290px;
+    opacity:0;
   }
 }
 
 @keyframes pulseGlow{
   0%,100%{
     transform:translate(-50%,-50%) scale(1);
-  }
-  50%{
-    transform:translate(-50%,-50%) scale(1.18);
-  }
-}
-
-@keyframes dishFloat{
-  0%,100%{
-    transform:translateY(0px);
-  }
-  50%{
-    transform:translateY(-12px);
-  }
-}
-
-@keyframes scan{
-  0%{
-    top:0;
-  }
-  100%{
-    top:100%;
-  }
-}
-
-@keyframes qrMove{
-  from{
-    transform:translateY(0);
-  }
-  to{
-    transform:translateY(20px);
-  }
-}
-
-@keyframes pulseWave{
-  0%{
-    transform:scale(.9);
     opacity:.5;
   }
-  100%{
-    transform:scale(1.2);
-    opacity:0;
+  50%{
+    transform:translate(-50%,-50%) scale(1.2);
+    opacity:.2;
   }
 }
 
-@keyframes marquee{
+@keyframes slide{
   from{
     transform:translateX(0);
   }
   to{
     transform:translateX(-50%);
+  }
+}
+
+@keyframes floatParticle{
+  from{
+    transform:translateY(100vh);
+    opacity:0;
+  }
+  to{
+    transform:translateY(-10vh);
+    opacity:1;
   }
 }
 
@@ -847,42 +674,38 @@ footer{
   }
 
   .hero{
-    padding-top:160px;
+    padding-top:120px;
   }
 
   .hero h1{
-    font-size:52px;
+    font-size:54px;
     line-height:1;
+    letter-spacing:-1px;
   }
 
   .hero p{
     font-size:15px;
   }
 
-  .hero-buttons{
-    flex-direction:column;
-  }
-
-  .btn-primary,
-  .btn-secondary{
-    width:100%;
-  }
-
   .phone{
     width:290px;
-    height:620px;
+    height:600px;
   }
 
   .food{
-    font-size:80px;
+    font-size:76px;
   }
 
   .food-name{
     font-size:24px;
   }
 
-  .voice-box{
-    padding:40px 24px;
+  .card{
+    width:280px;
+  }
+
+  .cta-box{
+    padding:70px 24px;
   }
 
 }
@@ -892,27 +715,33 @@ footer{
 
 <body>
 
+<div class="bg"></div>
 <div class="grid"></div>
-<div class="cursor-glow"></div>
+
+<div class="particles">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
 
 <!-- NAV -->
 
 <nav>
 
-<div class="logo">
-Live<span>Dish</span> AI
-</div>
+  <div class="logo">
+    Live<span>Dish</span> AI
+  </div>
 
-<div class="nav-links">
-<a href="#">Features</a>
-<a href="#">AR Experience</a>
-<a href="#">Analytics</a>
-<a href="#">Restaurants</a>
-</div>
+  <div class="nav-links">
+    <a href="#">Features</a>
+    <a href="#">Experience</a>
+    <a href="#">Restaurants</a>
+    <a href="#">Pricing</a>
+  </div>
 
-<button class="nav-btn">
-Book Demo
-</button>
+
 
 </nav>
 
@@ -920,56 +749,33 @@ Book Demo
 
 <section class="hero">
 
-<video autoplay muted loop playsinline class="hero-video">
-<source src="https://cdn.coverr.co/videos/coverr-serving-food-1565566936953?download=1080p" type="video/mp4">
-</video>
+  <div class="hero-content">
 
-<div class="hero-content">
+    <div class="hero-badge">
+      ✦ THE FUTURE OF RESTAURANT EXPERIENCE
+    </div>
 
-<div class="hero-badge">
-✦ FUTURE OF RESTAURANT EXPERIENCE
-</div>
+    <h1>
+      LiveDish-AI </h1><h2>transforms your restaurant menus into immersive AR experiences </h2>
 
-<h1>
-Turn Every Menu Into <span>Interactive AR</span>
-</h1>
+    <h2>
+      Guests scan, preview life-size dishes, and order with more confidence —
+      helping restaurants increase sales, engagement, and customer satisfaction.
+    </h2>
 
-<p>
-LiveDish AI transforms restaurant menus into immersive augmented reality experiences. Guests preview life-size dishes, interact with 3D food models, and order with confidence.
-</p>
+    <div class="hero-buttons">
 
-<div class="hero-buttons">
+      <button class="btn-primary">
+        Start Live Demo →
+      </button>
 
-<button class="btn-primary">
-Start Live Demo →
-</button>
+      <button class="btn-secondary">
+        Watch Experience
+      </button>
 
-<button class="btn-secondary">
-Watch Experience
-</button>
+    </div>
 
-</div>
-
-<div class="hero-stats">
-
-<div>
-<h3>+38%</h3>
-<span>Higher Engagement</span>
-</div>
-
-<div>
-<h3>+24%</h3>
-<span>Upselling Increase</span>
-</div>
-
-<div>
-<h3>3x</h3>
-<span>More Social Shares</span>
-</div>
-
-</div>
-
-</div>
+  </div>
 
 </section>
 
@@ -977,196 +783,290 @@ Watch Experience
 
 <section class="phone-section">
 
-<div class="phone-wrap">
+  <div class="phone-wrap">
 
-<div class="phone-glow"></div>
+    <div class="phone-glow"></div>
 
-<div class="phone">
+    <div class="phone">
 
-<div class="notch"></div>
+      <div class="notch"></div>
 
-<div class="phone-content">
+      <div class="phone-content">
 
-<h3 style="color:var(--gold)">
-LIVEDISH AR
-</h3>
+        <div class="phone-top">
+          <h3 style="color:var(--gold)">LIVEDISH AR</h3>
+          <div class="live-pill">● LIVE</div>
+        </div>
 
-<div class="scan-box">
+        <div class="scan-box">
 
-<div class="qr-overlay"></div>
-<div class="scan-line"></div>
+          <div class="scan-line"></div>
 
-<div class="food" id="foodEmoji">
-🍣
-</div>
+          <div class="food" id="foodEmoji">
+            🍣
+          </div>
 
-</div>
+        </div>
 
-<div class="food-name" id="foodName">
-Sushi Omakase
-</div>
+        <div class="food-name" id="foodName">
+          Sushi Omakase
+        </div>
 
-<div class="tags" id="foodTags">
-<span>🔥 580 kcal</span>
-<span>⭐ 4.9</span>
-<span>🌿 Fresh</span>
-</div>
+        <div class="tags" id="foodTags">
+          <span>🔥 580 kcal</span>
+          <span>⭐ 4.9</span>
+          <span>🌿 Fresh</span>
+          <span>🚫 Gluten-Free</span>
+        </div>
 
-<button class="order-btn" id="priceBtn">
-Add To Order — ₹1290
-</button>
+        <button class="order-btn" id="priceBtn">
+          Add to Order — ₹1290
+        </button>
 
-</div>
+      </div>
 
-</div>
+    </div>
 
-</div>
+  </div>
 
 </section>
 
-<!-- CUISINES -->
+<!-- CAROUSEL -->
 
-<section class="section">
+<section class="carousel-section">
 
-<div class="section-title">
-<h2>Global Cuisine Experiences</h2>
-</div>
+  <div class="carousel-title">
+    <h2>Built For Restaurants Around The World</h2>
+  </div>
 
-<div class="cards">
+  <div class="carousel">
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=1200&auto=format&fit=crop">
-<div class="card-content">
-<h3>Japanese Cuisine</h3>
-<p>Immersive sushi, ramen and omakase experiences with cinematic AR previews.</p>
-</div>
-</div>
+    <!-- JAPANESE -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Japanese Cuisine</h3>
+        <p>Sushi, ramen, and premium omakase experiences in immersive AR.</p>
+      </div>
+    </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=1200&auto=format&fit=crop">
-<div class="card-content">
-<h3>Indian Cuisine</h3>
-<p>Bring biryanis, curries and chef specials to life using realistic AR dining.</p>
-</div>
-</div>
+    <!-- ITALIAN -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Italian Cuisine</h3>
+        <p>Showcase authentic pizzas, pasta, and luxury Italian dining visually.</p>
+      </div>
+    </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop">
-<div class="card-content">
-<h3>Italian Cuisine</h3>
-<p>Luxury pizza and pasta visualizations with premium storytelling experiences.</p>
-</div>
-</div>
+    <!-- INDIAN -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Indian Cuisine</h3>
+        <p>Bring vibrant curries, biryanis, and tandoori dishes to life.</p>
+      </div>
+    </div>
 
-</div>
+    <!-- KOREAN -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Korean Cuisine</h3>
+        <p>Interactive Korean BBQ and street food experiences in AR.</p>
+      </div>
+    </div>
+
+    <!-- CHINESE -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Chinese Cuisine</h3>
+        <p>Visualize authentic dim sum, noodles, and wok specialties.</p>
+      </div>
+    </div>
+
+    <!-- MEXICAN -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Mexican Cuisine</h3>
+        <p>Tacos, nachos, and bold flavors visualized beautifully in AR.</p>
+      </div>
+    </div>
+
+    <!-- THAI -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Thai Cuisine</h3>
+        <p>Present colorful Thai dishes with immersive menu previews.</p>
+      </div>
+    </div>
+
+    <!-- FRENCH -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>French Cuisine</h3>
+        <p>Elegant plated meals displayed with luxury presentation.</p>
+      </div>
+    </div>
+
+    <!-- AMERICAN -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>American Cuisine</h3>
+        <p>Modern burgers, steaks, and premium comfort food in AR.</p>
+      </div>
+    </div>
+
+    <!-- MIDDLE EASTERN -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Middle Eastern Cuisine</h3>
+        <p>Display kebabs, shawarma, and mezze platters interactively.</p>
+      </div>
+    </div>
+
+    <!-- SEAFOOD -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Seafood Cuisine</h3>
+        <p>Premium seafood experiences with realistic AR visualization.</p>
+      </div>
+    </div>
+
+    <!-- FINE DINING -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Fine Dining</h3>
+        <p>Luxury restaurants create unforgettable guest experiences.</p>
+      </div>
+    </div>
+
+    <!-- VEGAN -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Vegan Cuisine</h3>
+        <p>Highlight healthy and sustainable menu options beautifully.</p>
+      </div>
+    </div>
+
+    <!-- FUSION -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop"/>
+      <div class="card-content">
+        <h3>Fusion Cuisine</h3>
+        <p>Showcase unique chef specials with immersive storytelling.</p>
+      </div>
+    </div>
+
+    
+
+  </div>
 
 </section>
 
 <!-- FEATURES -->
 
-<section class="section">
+<section class="features">
 
-<div class="section-title">
-<h2>Why Restaurants Choose LiveDish AI</h2>
-</div>
+  <div class="section-title">
+    <h2>
+      Why Restaurant Owners <br>
+      Choose LiveDish AI
+    </h2>
+  </div>
 
-<div class="feature-grid">
+  <div class="feature-grid">
 
-<div class="feature">
-<div class="feature-icon">📈</div>
-<h3>Increase Sales</h3>
-<p>Customers order premium dishes more confidently after viewing them in AR.</p>
-</div>
+    <div class="feature">
+      <div class="feature-icon">📈</div>
+      <h3>Increase Food Sales</h3>
+      <p>
+        Customers order more confidently after viewing dishes in realistic AR.
+      </p>
+    </div>
 
-<div class="feature">
-<div class="feature-icon">🎥</div>
-<h3>Viral Experiences</h3>
-<p>Guests naturally share immersive dining experiences on social media.</p>
-</div>
+    <div class="feature">
+      <div class="feature-icon">📸</div>
+      <h3>Boost Social Media Sharing</h3>
+      <p>
+        Guests naturally share AR dining experiences on Instagram and TikTok.
+      </p>
+    </div>
 
-<div class="feature">
-<div class="feature-icon">⚡</div>
-<h3>No App Required</h3>
-<p>Launch instantly from any smartphone browser using a simple QR scan.</p>
-</div>
+    <div class="feature">
+      <div class="feature-icon">🍽️</div>
+      <h3>Reduce Order Confusion</h3>
+      <p>
+        Guests clearly understand portion size and presentation before ordering.
+      </p>
+    </div>
 
-</div>
+    <div class="feature">
+      <div class="feature-icon">⭐</div>
+      <h3>Premium Brand Experience</h3>
+      <p>
+        Create a futuristic dining atmosphere customers will remember.
+      </p>
+    </div>
 
-</section>
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <h3>No App Required</h3>
+      <p>
+        Customers instantly access AR menus directly from their browser.
+      </p>
+    </div>
 
-<!-- VOICE AI -->
+    <div class="feature">
+      <div class="feature-icon">🌍</div>
+      <h3>Supports Global Cuisines</h3>
+      <p>
+        Perfect for Japanese, Korean, Indian, Italian, Chinese, and themed restaurants.
+      </p>
+    </div>
 
-<section class="section">
+    <div class="feature">
+      <div class="feature-icon">💡</div>
+      <h3>Increase Upselling</h3>
+      <p>
+        Highlight premium dishes visually to encourage higher-value orders.
+      </p>
+    </div>
 
-<div class="section-title">
-<h2>AI Voice Ordering</h2>
-</div>
+    <div class="feature">
+      <div class="feature-icon">🎥</div>
+      <h3>Create Viral Moments</h3>
+      <p>
+        Interactive AR dishes attract customer attention and online engagement.
+      </p>
+    </div>
 
-<div class="voice-box">
+    <div class="feature">
+      <div class="feature-icon">📊</div>
+      <h3>Restaurant Analytics</h3>
+      <p>
+        Track which dishes customers preview and interact with the most.
+      </p>
+    </div>
 
-<div class="wave"></div>
+    <div class="feature">
+      <div class="feature-icon">🚀</div>
+      <h3>Future-Ready Technology</h3>
+      <p>
+        Position your restaurant as an innovative dining destination.
+      </p>
+    </div>
 
-<p>
-“Show me the chef’s spicy ramen”
-</p>
-
-<button class="btn-primary">
-🎤 Start Voice Demo
-</button>
-
-</div>
-
-</section>
-
-<!-- DASHBOARD -->
-
-<section class="section">
-
-<div class="section-title">
-<h2>Live Restaurant Analytics</h2>
-</div>
-
-<div class="dashboard">
-
-<div class="metric">
-<h3>12.4k</h3>
-<p>AR Dish Views</p>
-</div>
-
-<div class="metric">
-<h3>+28%</h3>
-<p>Upselling Increase</p>
-</div>
-
-<div class="metric">
-<h3>4.9★</h3>
-<p>Customer Satisfaction</p>
-</div>
-
-</div>
-
-</section>
-
-<!-- MARQUEE -->
-
-<section class="section">
-
-<div class="marquee">
-
-<div class="marquee-track">
-
-<span>TAJ</span>
-<span>MARRIOTT</span>
-<span>ITC</span>
-<span>OBEROI</span>
-<span>RAMEN HOUSE</span>
-<span>TAJ</span>
-<span>MARRIOTT</span>
-<span>ITC</span>
-
-</div>
-
-</div>
+  </div>
 
 </section>
 
@@ -1174,71 +1074,58 @@ Add To Order — ₹1290
 
 <section class="cta">
 
-<div class="cta-box">
+  <div class="cta-box">
 
-<h2>
-Bring Your Menu To Life
-</h2>
+    <h2>
+      Bring Your Menu <br>
+      To Life
+    </h2>
 
-<p>
-Transform restaurant dining into an immersive AR experience powered by LiveDish AI.
-</p>
+    <p>
+      Join the future of restaurant technology with immersive AR dining experiences powered by LiveDish AI.
+    </p>
 
-<button class="btn-primary">
-Get Started →
-</button>
+    <button class="btn-primary">
+      Get Started →
+    </button>
 
-</div>
+  </div>
 
 </section>
 
+<!-- FOOTER -->
+
 <footer>
-© 2026 LiveDish AI — Premium AR Dining Experience
+  © 2026 LiveDish AI — All Rights Reserved
 </footer>
 
 <script>
 
-const glow = document.querySelector('.cursor-glow');
-
-window.addEventListener('mousemove',(e)=>{
-
-glow.style.left = e.clientX + 'px';
-glow.style.top = e.clientY + 'px';
-
-});
-
-/* FOOD ROTATION */
-
 const foods = [
-
 {
 emoji:"🍣",
 name:"Sushi Omakase",
 price:"₹1290",
-tags:["🔥 580 kcal","⭐ 4.9","🌿 Fresh"]
+tags:["🔥 580 kcal","⭐ 4.9","🌿 Fresh","🚫 Gluten-Free"]
 },
-
 {
 emoji:"🍕",
 name:"Truffle Pizza",
 price:"₹890",
-tags:["🧀 Cheese","⭐ 4.8","🍄 Mushroom"]
+tags:["🔥 720 kcal","⭐ 4.8","🧀 Cheese","🍄 Mushroom"]
 },
-
-{
-emoji:"🍜",
-name:"Tonkotsu Ramen",
-price:"₹640",
-tags:["🥚 Soft Egg","⭐ 4.9","🌶 Spicy"]
-},
-
 {
 emoji:"🍔",
 name:"Smash Burger",
+price:"₹640",
+tags:["🔥 950 kcal","⭐ 4.7","🥩 Wagyu","🌶 Spicy"]
+},
+{
+emoji:"🍜",
+name:"Tonkotsu Ramen",
 price:"₹540",
-tags:["🥩 Wagyu","⭐ 4.7","🔥 Grill"]
+tags:["🔥 620 kcal","⭐ 4.9","🥚 Soft Egg","🍥 Japanese"]
 }
-
 ];
 
 let current = 0;
@@ -1247,19 +1134,48 @@ setInterval(()=>{
 
 current = (current + 1) % foods.length;
 
-document.getElementById('foodEmoji').innerHTML =
-foods[current].emoji;
+document.getElementById("foodEmoji").innerHTML = foods[current].emoji;
+document.getElementById("foodName").innerHTML = foods[current].name;
+document.getElementById("priceBtn").innerHTML =
+`Add to Order — ${foods[current].price}`;
 
-document.getElementById('foodName').innerHTML =
-foods[current].name;
-
-document.getElementById('priceBtn').innerHTML =
-`Add To Order — ${foods[current].price}`;
-
-document.getElementById('foodTags').innerHTML =
+document.getElementById("foodTags").innerHTML =
 foods[current].tags.map(tag=>`<span>${tag}</span>`).join('');
 
 },3500);
+
+
+/* FEATURE REVEAL ANIMATION */
+
+const features = document.querySelectorAll('.feature');
+
+const revealFeatures = () => {
+
+  const triggerBottom = window.innerHeight * 0.88;
+
+  features.forEach((feature,index)=>{
+
+    const rect = feature.getBoundingClientRect();
+
+    if(rect.top < triggerBottom){
+
+      setTimeout(()=>{
+
+        feature.classList.add('show');
+
+      }, index * 120);
+
+    }
+
+  });
+
+};
+
+window.addEventListener('scroll', revealFeatures);
+
+revealFeatures();
+
+
 
 </script>
 
