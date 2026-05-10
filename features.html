@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LiveDish AI — Features</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --gold:#C9A84C;
+  --gold2:#E8C97A;
+  --dark:#06070D;
+  --dark2:#0D0F18;
+  --text:#F7F7FB;
+  --muted:#8A92B2;
+}
+
+body{
+  background:linear-gradient(180deg,#06070D,#0B0E17);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+}
+
+.features-hero{
+  padding:140px 8% 100px;
+  text-align:center;
+}
+
+.features-hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(52px,8vw,110px);
+  line-height:1;
+  letter-spacing:-3px;
+  margin-bottom:30px;
+}
+
+.features-hero h1 span{
+  color:var(--gold);
+}
+
+.features-hero p{
+  max-width:850px;
+  margin:auto;
+  font-size:20px;
+  color:var(--muted);
+  line-height:1.9;
+}
+
+.feature-section{
+  padding:40px 8% 100px;
+}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:35px;
+}
+
+.feature-card{
+  background:rgba(18,20,35,.7);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:32px;
+  overflow:hidden;
+  transition:.5s;
+  backdrop-filter:blur(18px);
+}
+
+.feature-card:hover{
+  transform:translateY(-10px);
+  border-color:rgba(201,168,76,.25);
+  box-shadow:
+  0 20px 50px rgba(0,0,0,.5),
+  0 0 40px rgba(201,168,76,.08);
+}
+
+.feature-card img{
+  width:100%;
+  height:240px;
+  object-fit:cover;
+}
+
+.feature-content{
+  padding:34px;
+}
+
+.feature-content h2{
+  font-family:'Syne',sans-serif;
+  font-size:30px;
+  margin-bottom:18px;
+}
+
+.feature-content p{
+  color:var(--muted);
+  line-height:1.9;
+  font-size:16px;
+  margin-bottom:20px;
+}
+
+.feature-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.feature-list span{
+  padding:12px 16px;
+  border-radius:14px;
+  background:rgba(201,168,76,.06);
+  border:1px solid rgba(201,168,76,.12);
+  color:var(--gold2);
+  font-size:14px;
+}
+
+.cta{
+  padding:120px 8%;
+}
+
+.cta-box{
+  background:linear-gradient(180deg,#10131F,#090B14);
+  border-radius:40px;
+  border:1px solid rgba(201,168,76,.12);
+  text-align:center;
+  padding:100px 30px;
+}
+
+.cta-box h2{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(42px,6vw,80px);
+  line-height:1;
+  margin-bottom:24px;
+}
+
+.cta-box p{
+  color:var(--muted);
+  max-width:750px;
+  margin:auto;
+  line-height:1.9;
+  font-size:18px;
+}
+
+.cta-btn{
+  margin-top:40px;
+  padding:18px 40px;
+  border:none;
+  border-radius:60px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:black;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.4s;
+}
+
+.cta-btn:hover{
+  transform:translateY(-4px);
+  box-shadow:0 20px 50px rgba(201,168,76,.25);
+}
+
+@media(max-width:768px){
+
+.features-hero{
+  padding:120px 6% 80px;
+}
+
+.features-hero p{
+  font-size:16px;
+}
+
+.feature-content h2{
+  font-size:24px;
+}
+
+.cta-box{
+  padding:70px 24px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<section class="features-hero">
+
+  <h1>
+    Powerful <span>Features</span>
+  </h1>
+
+  <p>
+    LiveDish AI transforms traditional restaurant menus into immersive augmented reality dining experiences. 
+    Customers can scan, preview life-size dishes, interact with menus, and order confidently — all directly from their browser.
+  </p>
+
+</section>
+
+<section class="feature-section">
+
+  <div class="feature-grid">
+
+    <!-- FEATURE 1 -->
+
+    <div class="feature-card">
+
+      <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop">
+
+      <div class="feature-content">
+
+        <h2>Browser Based AR</h2>
+
+        <p>
+          Customers instantly launch immersive AR food previews directly from their phone browser without downloading any application.
+        </p>
+
+        <div class="feature-list">
+          <span>✓ No App Installation</span>
+          <span>✓ Instant QR Access</span>
+          <span>✓ Cross Platform Support</span>
+          <span>✓ Real-Time Experience</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FEATURE 2 -->
+
+    <div class="feature-card">
+
+      <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200&auto=format&fit=crop">
+
+      <div class="feature-content">
+
+        <h2>3D Food Visualization</h2>
+
+        <p>
+          Display highly realistic dishes in AR so guests can understand portion size, ingredients, and presentation before ordering.
+        </p>
+
+        <div class="feature-list">
+          <span>✓ Realistic 3D Models</span>
+          <span>✓ Life-Size Dish Preview</span>
+          <span>✓ Interactive Rotation</span>
+          <span>✓ Premium Visual Quality</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FEATURE 3 -->
+
+    <div class="feature-card">
+
+      <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop">
+
+      <div class="feature-content">
+
+        <h2>Restaurant Analytics</h2>
+
+        <p>
+          Monitor customer engagement, dish interactions, and menu performance with intelligent analytics dashboards.
+        </p>
+
+        <div class="feature-list">
+          <span>✓ Customer Insights</span>
+          <span>✓ Popular Dish Tracking</span>
+          <span>✓ Engagement Analytics</span>
+          <span>✓ Performance Reports</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FEATURE 4 -->
+
+    <div class="feature-card">
+
+      <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1200&auto=format&fit=crop">
+
+      <div class="feature-content">
+
+        <h2>Social Media Boost</h2>
+
+        <p>
+          Interactive AR dishes naturally encourage customers to create and share content on Instagram, TikTok, and social media.
+        </p>
+
+        <div class="feature-list">
+          <span>✓ Viral Dining Experience</span>
+          <span>✓ Instagram Friendly</span>
+          <span>✓ Customer Engagement</span>
+          <span>✓ Brand Visibility</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="cta">
+
+  <div class="cta-box">
+
+    <h2>
+      The Future Of Restaurant Menus
+    </h2>
+
+    <p>
+      LiveDish AI helps restaurants create unforgettable dining experiences using advanced augmented reality technology and immersive food visualization.
+    </p>
+
+    <button class="cta-btn">
+      Get Started →
+    </button>
+
+  </div>
+
+</section>
+
+</body>
+</html>
