@@ -122,19 +122,41 @@
 
 @media(max-width:768px){
 
-  .hero{
-    min-height:auto;
-    padding:80px 0 0;
-  }
+ /* HERO BANNER */
 
-  .hero-banner{
-    margin:0 calc(-50vw + 50%) 20px;
+.hero{
+  min-height:auto;
+  padding:80px 0 0;
+}
+
+.hero-banner{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  background:black;
+}
+
+.hero-banner img{
+  width:100%;
+  height:auto;
+  display:block;
+  object-fit:contain;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .hero{
+    padding:70px 0 0;
   }
 
   .hero-banner img{
-    height:52vh;
-    min-height:260px;
-    object-position:center;
+    width:100%;
+    height:auto;
+    object-fit:contain;
   }
 
 }
