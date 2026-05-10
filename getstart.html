@@ -1,347 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>LiveDish AI — Get Started</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-<style>
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-:root{
-  --gold:#D9B95B;
-  --gold2:#EACB76;
-  --dark:#06070D;
-  --text:#F5F7FF;
-  --muted:#8A92B2;
-}
-
-body{
-  font-family:'DM Sans',sans-serif;
-  background:
-  radial-gradient(circle at top left, rgba(217,185,91,.12), transparent 25%),
-  linear-gradient(180deg,#05060C,#090B13);
-  color:var(--text);
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:60px 20px;
-  overflow-x:hidden;
-}
-
-/* FORM BOX */
-
-.form-box{
-  width:100%;
-  max-width:850px;
-  background:rgba(15,18,28,.82);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:40px;
-  padding:60px;
-  backdrop-filter:blur(20px);
-
-  box-shadow:
-  0 20px 60px rgba(0,0,0,.5),
-  0 0 50px rgba(217,185,91,.08);
-}
-
-/* TITLE */
-
-.title{
-  text-align:center;
-  margin-bottom:50px;
-}
-
-.title h1{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(42px,7vw,82px);
-  line-height:1;
-  margin-bottom:24px;
-}
-
-.title h1 span{
-  color:var(--gold);
-}
-
-.title p{
-  color:var(--muted);
-  line-height:1.8;
-  font-size:18px;
-}
-
-/* FORM */
-
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
-}
-
-.input-box{
-  display:flex;
-  flex-direction:column;
-}
-
-.input-box.full{
-  grid-column:1/3;
-}
-
-label{
-  margin-bottom:12px;
-  font-size:15px;
-  color:#fff;
-}
-
-input,
-textarea,
-select{
-  width:100%;
-  padding:18px 20px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.03);
-  color:white;
-  font-size:15px;
-  outline:none;
-  transition:.3s;
-}
-
-textarea{
-  min-height:140px;
-  resize:none;
-}
-
-input:focus,
-textarea:focus,
-select:focus{
-  border-color:var(--gold);
-  box-shadow:0 0 20px rgba(217,185,91,.15);
-}
-
-/* BUTTON */
-
-.submit-btn{
-  margin-top:35px;
-  width:100%;
-  padding:20px;
-  border:none;
-  border-radius:60px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:black;
-  font-size:18px;
-  font-weight:700;
-  cursor:pointer;
-  transition:.4s;
-}
-
-.submit-btn:hover{
-  transform:translateY(-4px);
-  box-shadow:0 20px 40px rgba(217,185,91,.2);
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-.form-box{
-  padding:40px 24px;
-  border-radius:30px;
-}
-
-.form-grid{
-  grid-template-columns:1fr;
-}
-
-.input-box.full{
-  grid-column:auto;
-}
-
-.title p{
-  font-size:15px;
-}
-
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="form-box">
-
-  <div class="title">
-
-    <h1>
-      Get <span>Started</span>
-    </h1>
-
-    <p>
-      Fill in your restaurant details and our team will contact you with a personalized AR Menu solution for your business.
-    </p>
-
-  </div>
-
-  <form id="restaurantForm">
-
-    <div class="form-grid">
-
-      <!-- OWNER -->
-
-      <div class="input-box">
-        <label>Owner Name</label>
-        <input type="text" id="owner" required>
-      </div>
-
-      <!-- RESTAURANT -->
-
-      <div class="input-box">
-        <label>Restaurant Name</label>
-        <input type="text" id="restaurant" required>
-      </div>
-
-      <!-- PHONE -->
-
-      <div class="input-box">
-        <label>Phone Number</label>
-        <input type="tel" id="phone" required>
-      </div>
-
-      <!-- EMAIL -->
-
-      <div class="input-box">
-        <label>Email Address</label>
-        <input type="email" id="email" required>
-      </div>
-
-      <!-- LOCATION -->
-
-      <div class="input-box">
-        <label>Restaurant Location</label>
-        <input type="text" id="location" required>
-      </div>
-
-      <!-- CUISINE -->
-
-      <div class="input-box">
-        <label>Cuisine Type</label>
-
-        <select id="cuisine">
-
-          <option>Indian</option>
-          <option>Japanese</option>
-          <option>Italian</option>
-          <option>Korean</option>
-          <option>Chinese</option>
-          <option>Mexican</option>
-          <option>Thai</option>
-          <option>Fine Dining</option>
-          <option>Cafe</option>
-
-        </select>
-
-      </div>
-
-      <!-- MESSAGE -->
-
-      <div class="input-box full">
-        <label>Tell Us About Your Restaurant</label>
-
-        <textarea id="message"></textarea>
-      </div>
-
-    </div>
-
-    <button type="submit" class="submit-btn">
-      Submit Details →
-    </button>
-
-  </form>
-
-</div>
-
 <script>
+
+const scriptURL =
+"https://script.google.com/macros/s/AKfycbxVFbiJkmCrUjQ-mSvxxQL1ZFsHtPNPK-c2JraQMfsYEKk5c4n8CarK7zkJZEHxaXHaPw/exec";
 
 document
 .getElementById("restaurantForm")
-.addEventListener("submit", function(e){
+.addEventListener("submit", async function(e){
 
 e.preventDefault();
 
-/* GET VALUES */
+const btn =
+document.querySelector(".submit-btn");
 
-const owner =
-document.getElementById("owner").value;
+btn.innerHTML = "Submitting...";
+btn.disabled = true;
 
-const restaurant =
-document.getElementById("restaurant").value;
+/* FORM DATA */
 
-const phone =
-document.getElementById("phone").value;
+const data = {
 
-const email =
-document.getElementById("email").value;
+owner:
+document.getElementById("owner").value,
 
-const location =
-document.getElementById("location").value;
+restaurant:
+document.getElementById("restaurant").value,
 
-const cuisine =
-document.getElementById("cuisine").value;
+phone:
+document.getElementById("phone").value,
 
-const message =
-document.getElementById("message").value;
+email:
+document.getElementById("email").value,
 
-/* WHATSAPP MESSAGE */
+location:
+document.getElementById("location").value,
 
-const whatsappMessage =
-`🍽 *New Restaurant Inquiry* %0A%0A
-👤 Owner: ${owner}%0A
-🏪 Restaurant: ${restaurant}%0A
-📞 Phone: ${phone}%0A
-📧 Email: ${email}%0A
-📍 Location: ${location}%0A
-🍜 Cuisine: ${cuisine}%0A
-📝 Details: ${message}`;
+cuisine:
+document.getElementById("cuisine").value,
 
-/* OPEN WHATSAPP */
+message:
+document.getElementById("message").value
 
-window.open(
-`https://wa.me/917019743880?text=${whatsappMessage}`,
-'_blank'
+};
+
+try{
+
+/* SEND TO GOOGLE SHEET */
+
+await fetch(scriptURL, {
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify(data)
+
+});
+
+/* SUCCESS */
+
+btn.innerHTML = "Submitted ✓";
+
+alert(
+"Thank you! Your details have been submitted successfully."
 );
 
-/* EMAIL */
+/* RESET FORM */
 
-window.location.href =
-`mailto:livedishai@gmail.com
-?subject=New Restaurant Inquiry - ${restaurant}
-&body=
-Owner Name: ${owner}
+document
+.getElementById("restaurantForm")
+.reset();
 
-Restaurant Name: ${restaurant}
+}catch(err){
 
-Phone Number: ${phone}
+console.log(err);
 
-Email Address: ${email}
+alert(
+"Something went wrong. Please try again."
+);
 
-Restaurant Location: ${location}
+btn.innerHTML = "Submit Details →";
 
-Cuisine Type: ${cuisine}
+}
 
-Restaurant Details:
-${message}`;
+btn.disabled = false;
 
 });
 
 </script>
-
-</body>
-</html>
