@@ -124,18 +124,20 @@
 
  /* HERO BANNER */
 
+/* HERO BANNER */
+
 .hero{
   min-height:auto;
   padding:80px 0 0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 .hero-banner{
   width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
   overflow:hidden;
-  background:black;
+  background:#000;
 }
 
 .hero-banner img{
@@ -148,6 +150,10 @@
 /* MOBILE */
 
 @media(max-width:768px){
+
+  .nav-links{
+    display:none;
+  }
 
   .hero{
     padding:70px 0 0;
@@ -997,7 +1003,7 @@ footer{
 <section class="hero">
 
   <div class="hero-banner">
-    <img src="banner.png" alt="LiveDish AI Banner">" 
+    <img src="banner.png" alt="LiveDish AI Banner"> 
   </div>
 
  
