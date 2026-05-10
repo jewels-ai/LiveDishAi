@@ -101,49 +101,29 @@
 }
   /* HERO */
 
-/* HERO BANNER */
-
-/* HERO BANNER */
-
-.hero{
-  min-height:auto;
-  padding:80px 0 0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
 .hero-banner{
-  width:100%;
+  width:100vw;
+  margin:0 calc(-50vw + 50%) 60px;
+  border-radius:0;
   overflow:hidden;
-  background:#000;
+  border-top:1px solid rgba(201,168,76,.12);
+  border-bottom:1px solid rgba(201,168,76,.12);
+  box-shadow:
+  0 30px 80px rgba(0,0,0,.45),
+  0 0 60px rgba(201,168,76,.08);
+  animation:fadeUp 1s ease;
 }
 
 .hero-banner img{
   width:100%;
   height:auto;
   display:block;
-  object-fit:contain;
+  object-fit:cover;
 }
 
-/* MOBILE */
-
-@media(max-width:768px){
-
-  .nav-links{
-    display:none;
-  }
-
-  .hero{
-    padding:70px 0 0;
-  }
-
-  .hero-banner img{
-    width:100%;
-    height:auto;
-    object-fit:contain;
-  }
-
+.hero{
+  min-height:100vh;
+  ...
 }
 
 *{
@@ -313,7 +293,15 @@ text-decoration:none;
 
 /* HERO */
 
-
+.hero{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:140px 6% 80px;
+  position:relative;
+}
 
 .hero-content{
   max-width:1000px;
@@ -974,14 +962,14 @@ footer{
 <section class="hero">
 
   <div class="hero-banner">
-    <img src="banner.png" alt="LiveDish AI Banner"> 
+    <img src="banner.png" alt="LiveDish AI Banner">" 
   </div>
 
  
 
     
 
- 
+  </div>
 
 </section>
 
