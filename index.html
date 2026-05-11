@@ -25,46 +25,16 @@
 
 /* NAV LINKS */
 
-/* HOVER EFFECT */
-
 .nav-links a{
-  position:relative;
-  padding:12px 26px;
-  border-radius:50px;
-
+  color:var(--muted);
   text-decoration:none;
-  color:white;
+  font-size:14px;
+  position:relative;
 
-  font-size:15px;
-  font-weight:700;
-  letter-spacing:.3px;
+  opacity:0;
+  transform:translateY(-20px);
 
-  background:rgba(255,255,255,.04);
-
-  border:1px solid rgba(255,255,255,.08);
-
-  backdrop-filter:blur(10px);
-
-  transition:
-  transform .35s ease,
-  background .35s ease,
-  border-color .35s ease,
-  box-shadow .35s ease,
-  color .35s ease;
-
-  overflow:hidden;
-}
-
-  transition:.4s ease;
-  border-radius:20px;
-}
-
-.nav-links a:hover{
-  color:white;
-}
-
-.nav-links a:hover::after{
-  width:100%;
+  animation:navFade .7s forwards;
 }
 
 /* ONE AFTER ANOTHER */
