@@ -250,47 +250,87 @@ nav{
 }
 
 .nav-links a{
-  color:white;
-text-decoration:none;
-  font-size:14px;
   position:relative;
+  padding:12px 26px;
+  border-radius:50px;
 
-  opacity:0;
-  transform:translateY(-20px);
-
-  animation:navFade .7s forwards;
-}
-
-.nav-links a:hover{
+  text-decoration:none;
   color:white;
-}
 
-.nav-btn{
-  padding:14px 28px;
-  border:none;
-  border-radius:60px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:black;
+  font-size:15px;
   font-weight:700;
-  cursor:pointer;
-  position:relative;
+  letter-spacing:.3px;
+
+  background:rgba(255,255,255,.04);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  backdrop-filter:blur(10px);
+
+  transition:
+  transform .35s ease,
+  background .35s ease,
+  border-color .35s ease,
+  box-shadow .35s ease,
+  color .35s ease;
+
   overflow:hidden;
 }
 
-.nav-btn::after{
+/* GLOW EFFECT */
+
+.nav-links a::before{
   content:'';
   position:absolute;
-  top:-120%;
-  left:-40%;
-  width:40%;
-  height:300%;
-  background:rgba(255,255,255,.3);
-  transform:rotate(25deg);
-  transition:.8s;
+
+  inset:0;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(201,168,76,.22),
+    rgba(232,201,122,.05)
+  );
+
+  opacity:0;
+  transition:.4s;
 }
 
-.nav-btn:hover::after{
-  left:130%;
+/* HOVER */
+
+.nav-links a:hover{
+  color:#fff;
+
+  transform:translateY(-3px);
+
+  border-color:rgba(201,168,76,.35);
+
+  box-shadow:
+  0 10px 30px rgba(201,168,76,.18),
+  0 0 25px rgba(201,168,76,.12);
+
+  background:rgba(201,168,76,.08);
+}
+
+.nav-links a:hover::before{
+  opacity:1;
+}
+
+/* ACTIVE PAGE STYLE */
+
+.nav-links a.active{
+  background:linear-gradient(
+    135deg,
+    #C9A84C,
+    #E8C97A
+  );
+
+  color:black;
+
+  border-color:transparent;
+
+  box-shadow:
+  0 10px 30px rgba(201,168,76,.25);
 }
 
 /* HERO */
