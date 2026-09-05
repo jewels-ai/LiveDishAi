@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>LiveDish AI — Premium AR Dining</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+<style>
+:root{
+  --gold:#C9A84C;
+  --gold2:#E8C97A;
+  --dark:#06070D;
+  --dark2:#0D0F18;
+  --dark3:#131624;
+  --text:#F7F7FB;
+  --muted:#8A92B2;
+  --whatsapp:#25D366;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--dark);
+  color:var(--text);
+  overflow-x:hidden;
+  width:100%;
+  position:relative;
+}
+
+/* BACKGROUND ACCENTS */
+.bg{
+  position:fixed;
+  inset:0;
+  z-index:-3;
+  background:
+    radial-gradient(circle at top left, rgba(201,168,76,.12), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(201,168,76,.08), transparent 30%),
+    linear-gradient(180deg,#06070D,#090B13);
+}
+
+.grid{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(circle at center, black 25%, transparent 85%);
+}
+
+/* PARTICLES */
+.particles span{
+  position:fixed;
+  width:4px;
+  height:4px;
+  background:rgba(201,168,76,.4);
+  border-radius:50%;
+  pointer-events:none;
+  animation:floatParticle linear infinite;
+  z-index:-1;
+}
+
+.particles span:nth-child(1){ left:12%; animation-duration:14s; }
+.particles span:nth-child(2){ left:32%; animation-duration:20s; }
+.particles span:nth-child(3){ left:55%; animation-duration:17s; }
+.particles span:nth-child(4){ left:78%; animation-duration:12s; }
+.particles span:nth-child(5){ left:92%; animation-duration:22s; }
+
+/* NAVIGATION */
+nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:74px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 5%;
+  z-index:1000;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  background:rgba(6,7,13,.75);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+}
+
+.logo img{
+  height:44px;
+  width:auto;
+  object-fit:contain;
+}
+
+.logo-text{
+  font-family:'Syne',sans-serif;
+  font-size:22px;
+  font-weight:800;
+  color:#fff;
+}
+
+.logo-text span{
+  color:var(--gold);
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:28px;
+}
+
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:500;
+  position:relative;
+  transition:color .3s;
+}
+
+.nav-links a:hover{
+  color:#fff;
+}
+
+.nav-links a::after{
+  content:'';
+  position:absolute;
+  left:0;
+  bottom:-6px;
+  width:0%;
+  height:2px;
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  transition:.3s ease;
+  border-radius:10px;
+}
+
+.nav-links a:hover::after{
+  width:100%;
+}
+
+.nav-cta-btn{
+  padding:10px 22px;
+  border-radius:50px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;
+  font-size:13px;
+  font-weight:700;
+  text-decoration:none;
+  transition:.3s;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+
+.nav-cta-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(201,168,76,.3);
+}
+
+/* HERO SECTION */
+.hero{
+  padding:140px 6% 60px;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  position:relative;
+}
+
+.hero-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 18px;
+  border-radius:50px;
+  border:1px solid rgba(201,168,76,.3);
+  background:rgba(201,168,76,.08);
+  color:var(--gold2);
+  font-size:12px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+
+.hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(36px,7vw,86px);
+  line-height:1.05;
+  letter-spacing:-1.5px;
+  max-width:980px;
+  margin:0 auto 20px;
+}
+
+.hero h1 span{
+  color:transparent;
+  -webkit-text-stroke:1px var(--gold);
+}
+
+.hero p{
+  color:var(--muted);
+  font-size:clamp(15px,2vw,18px);
+  line-height:1.8;
+  max-width:680px;
+  margin:0 auto 36px;
+}
+
+.hero-actions{
+  display:flex;
+  gap:16px;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:50px;
+}
+
+.btn-primary{
+  padding:16px 34px;
+  border-radius:50px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;
+  font-weight:700;
+  font-size:15px;
+  text-decoration:none;
+  transition:.3s ease;
+  border:none;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+
+.btn-primary:hover{
+  transform:translateY(-3px);
+  box-shadow:0 15px 35px rgba(201,168,76,.35);
+}
+
+.btn-whatsapp{
+  padding:16px 30px;
+  border-radius:50px;
+  background:rgba(37,211,102,.12);
+  border:1px solid rgba(37,211,102,.35);
+  color:#fff;
+  font-weight:600;
+  font-size:15px;
+  text-decoration:none;
+  transition:.3s;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+
+.btn-whatsapp:hover{
+  background:rgba(37,211,102,.25);
+  border-color:var(--whatsapp);
+  transform:translateY(-3px);
+}
+
+.btn-whatsapp svg{
+  width:20px;
+  height:20px;
+  fill:var(--whatsapp);
+}
+
+/* BANNER */
+.hero-banner{
+  width:100%;
+  max-width:1100px;
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid rgba(201,168,76,.2);
+  box-shadow:0 25px 60px rgba(0,0,0,.6), 0 0 40px rgba(201,168,76,.08);
+  margin-bottom:60px;
+}
+
+.hero-banner img{
+  width:100%;
+  height:auto;
+  display:block;
+  object-fit:cover;
+}
+
+/* INTERACTIVE PHONE DEMO */
+.phone-section{
+  width:100%;
+  padding:30px 4% 80px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.phone-wrap{
+  position:relative;
+}
+
+.phone-glow{
+  position:absolute;
+  width:380px;
+  height:380px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(201,168,76,.18), transparent 70%);
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+
+.phone{
+  width:310px;
+  height:600px;
+  border-radius:44px;
+  background:linear-gradient(180deg,#101321,#090B14);
+  border:1px solid rgba(255,255,255,.1);
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 35px 80px rgba(0,0,0,.9);
+}
+
+.notch{
+  width:110px;
+  height:24px;
+  background:#000;
+  border-radius:0 0 16px 16px;
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top:0;
+  z-index:10;
+}
+
+.phone-content{
+  padding:34px 18px 18px;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.phone-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:6px;
+}
+
+.live-pill{
+  padding:4px 12px;
+  border-radius:50px;
+  border:1px solid rgba(201,168,76,.3);
+  color:var(--gold);
+  font-size:11px;
+  background:rgba(201,168,76,.08);
+}
+
+.scan-box{
+  flex:1;
+  margin:16px 0;
+  border-radius:24px;
+  border:1px dashed rgba(201,168,76,.3);
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.015);
+  overflow:hidden;
+}
+
+.scan-line{
+  position:absolute;
+  width:90%;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  animation:scan 2.8s infinite;
+}
+
+.food{
+  font-size:86px;
+  animation:dishFloat 3s infinite ease-in-out;
+  user-select:none;
+}
+
+.food-name{
+  text-align:center;
+  font-family:'Syne',sans-serif;
+  font-size:22px;
+  margin-bottom:8px;
+  color:#fff;
+}
+
+.tags{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:14px;
+}
+
+.tags span{
+  padding:5px 10px;
+  border-radius:30px;
+  background:rgba(201,168,76,.08);
+  border:1px solid rgba(201,168,76,.15);
+  color:var(--gold2);
+  font-size:11px;
+}
+
+.order-btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:40px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;
+  font-weight:700;
+  font-size:15px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+/* INFINITE CAROUSEL */
+.carousel-section{
+  padding:60px 0;
+  overflow:hidden;
+}
+
+.carousel-title{
+  text-align:center;
+  margin-bottom:40px;
+  padding:0 5%;
+}
+
+.carousel-title h2{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(28px,4.5vw,56px);
+  letter-spacing:-1px;
+}
+
+.carousel-track{
+  display:flex;
+  gap:24px;
+  width:max-content;
+  animation:slide 32s linear infinite;
+}
+
+.carousel-track:hover{
+  animation-play-state:paused;
+}
+
+.card{
+  width:300px;
+  background:rgba(18,20,35,.7);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:24px;
+  overflow:hidden;
+  transition:.3s;
+  flex-shrink:0;
+}
+
+.card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(201,168,76,.3);
+}
+
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+}
+
+.card-content{
+  padding:20px;
+}
+
+.card h3{
+  font-family:'Syne',sans-serif;
+  font-size:19px;
+  margin-bottom:6px;
+}
+
+.card p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
+
+/* FEATURES GRID */
+.features{
+  padding:80px 6%;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:50px;
+}
+
+.section-title h2{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(30px,5vw,60px);
+  letter-spacing:-1px;
+  line-height:1.15;
+}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:24px;
+  max-width:1200px;
+  margin:0 auto;
+}
+
+.feature{
+  background:rgba(18,20,35,.6);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:24px;
+  padding:28px;
+  transition:.4s ease;
+  position:relative;
+  opacity:0;
+  transform:translateY(30px);
+}
+
+.feature.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.feature:hover{
+  transform:translateY(-6px);
+  border-color:rgba(201,168,76,.3);
+  box-shadow:0 15px 40px rgba(0,0,0,.5);
+}
+
+.feature-media{
+  width:100%;
+  height:180px;
+  border-radius:16px;
+  overflow:hidden;
+  margin-bottom:18px;
+  border:1px solid rgba(255,255,255,.05);
+}
+
+.feature-media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .5s ease;
+}
+
+.feature:hover .feature-media img{
+  transform:scale(1.05);
+}
+
+.feature h3{
+  font-family:'Syne',sans-serif;
+  font-size:20px;
+  margin-bottom:10px;
+  color:#fff;
+}
+
+.feature p{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.7;
+}
+
+/* CTA */
+.cta{
+  padding:60px 6% 100px;
+}
+
+.cta-box{
+  max-width:1000px;
+  margin:0 auto;
+  padding:70px 30px;
+  border-radius:32px;
+  background:linear-gradient(180deg,#0E111C,#080911);
+  border:1px solid rgba(201,168,76,.2);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.cta-box h2{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(32px,5vw,62px);
+  line-height:1.1;
+  margin-bottom:16px;
+}
+
+.cta-box p{
+  color:var(--muted);
+  max-width:620px;
+  margin:0 auto 34px;
+  font-size:16px;
+  line-height:1.8;
+}
+
+.cta-buttons{
+  display:flex;
+  gap:16px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+/* FLOATING WHATSAPP PILL */
+.floating-whatsapp{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  z-index:9999;
+  background:#25D366;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 20px;
+  border-radius:50px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:14px;
+  box-shadow:0 10px 30px rgba(37,211,102,.4);
+  transition:transform .3s, box-shadow .3s;
+}
+
+.floating-whatsapp svg{
+  width:22px;
+  height:22px;
+  fill:#fff;
+}
+
+.floating-whatsapp:hover{
+  transform:scale(1.05) translateY(-2px);
+  box-shadow:0 15px 35px rgba(37,211,102,.6);
+}
+
+/* FOOTER */
+footer{
+  padding:30px 6%;
+  border-top:1px solid rgba(255,255,255,.06);
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* KEYFRAMES */
+@keyframes scan{
+  0%{ top:5%; opacity:0; }
+  15%{ opacity:1; }
+  85%{ opacity:1; }
+  100%{ top:95%; opacity:0; }
+}
+
+@keyframes dishFloat{
+  0%,100%{ transform:translateY(0px) rotate(0deg); }
+  50%{ transform:translateY(-10px) rotate(3deg); }
+}
+
+@keyframes slide{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
+}
+
+@keyframes floatParticle{
+  from{ transform:translateY(100vh); opacity:0; }
+  to{ transform:translateY(-10vh); opacity:1; }
+}
+
+/* RESPONSIVE BREAKPOINTS */
+@media(max-width:768px){
+  nav{
+    padding:0 4%;
+    height:64px;
+  }
+  .nav-links{
+    display:none;
+  }
+  .hero{
+    padding:110px 4% 40px;
+  }
+  .hero-banner{
+    border-radius:16px;
+    margin-bottom:40px;
+  }
+  .feature-grid{
+    grid-template-columns:1fr;
+  }
+  .floating-whatsapp span{
+    display:none;
+  }
+  .floating-whatsapp{
+    padding:14px;
+    border-radius:50%;
+    bottom:20px;
+    right:20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="grid"></div>
+
+<div class="particles">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<!-- FLOATING WHATSAPP BUTTON (Replace 91XXXXXXXXXX with your phone number) -->
+<a href="https://wa.me/919999999999?text=Hi%20LiveDish%20AI,%20I%20want%20to%20know%20more%20about%20your%20AR%20menu%20services!" target="_blank" rel="noopener noreferrer" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+  <span>Chat with Us</span>
+</a>
+
+<!-- TOP NAV -->
+<nav>
+  <a href="#" class="logo">
+    <img src="logo.png" alt="LiveDish AI Logo" onerror="this.style.display='none'">
+    <div class="logo-text">LiveDish <span>AI</span></div>
+  </a>
+
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#cuisines">Cuisines</a>
+    <a href="#demo">Live Demo</a>
+    <a href="https://wa.me/919999999999" class="nav-cta-btn" target="_blank" rel="noopener noreferrer">Contact Sales</a>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-badge">Next-Gen WebAR Dining</div>
+  <h1>Interactive AR Menus That <span>Skyrocket</span> Restaurant Sales</h1>
+  <p>Let guests preview real-scale 3D dishes on their table before ordering. Zero app download required — instant browser launch.</p>
+
+  <div class="hero-actions">
+    <a href="getstart.html" class="btn-primary">Get Started →</a>
+    <a href="https://wa.me/919999999999?text=Hi,%20I%20would%20like%20to%20book%20a%20LiveDish%20AI%20demo" target="_blank" rel="noopener noreferrer" class="btn-whatsapp">
+      <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+      WhatsApp Us
+    </a>
+  </div>
+
+  <div class="hero-banner">
+    <img src="banner.png" alt="LiveDish AI Banner" onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1200&auto=format&fit=crop'">
+  </div>
+</section>
+
+<!-- LIVE PHONE DEMO -->
+<section class="phone-section" id="demo">
+  <div class="phone-wrap">
+    <div class="phone-glow"></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="phone-content">
+        <div class="phone-top">
+          <span class="live-pill">● AR VIEW</span>
+          <span style="font-size:11px; color:var(--muted)">AR CAMERA ON</span>
+        </div>
+
+        <div class="scan-box">
+          <div class="scan-line"></div>
+          <div class="food" id="foodEmoji">🍣</div>
+        </div>
+
+        <div>
+          <div class="food-name" id="foodName">Sushi Omakase</div>
+          <div class="tags" id="foodTags">
+            <span>🔥 580 kcal</span>
+            <span>⭐ 4.9</span>
+            <span>🌿 Fresh</span>
+          </div>
+          <button class="order-btn" id="priceBtn">Add to Order — ₹1290</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CUISINE CAROUSEL -->
+<section class="carousel-section" id="cuisines">
+  <div class="carousel-title">
+    <h2>Built For Global Dining Experiences</h2>
+  </div>
+
+  <div class="carousel-track">
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=800&auto=format&fit=crop" alt="Japanese"/>
+      <div class="card-content">
+        <h3>Japanese Cuisine</h3>
+        <p>Sushi, ramen, and omakase experiences rendered with true-to-life textures.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=800&auto=format&fit=crop" alt="Indian"/>
+      <div class="card-content">
+        <h3>Indian Cuisine</h3>
+        <p>Rich curries, tandoori grills, and biryanis presented with volumetric color.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop" alt="Italian"/>
+      <div class="card-content">
+        <h3>Italian Cuisine</h3>
+        <p>Artisanal crust pizzas, handmade pastas, and plating proportions.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?q=80&w=800&auto=format&fit=crop" alt="Korean"/>
+      <div class="card-content">
+        <h3>Korean Cuisine</h3>
+        <p>Interactive table setups, sizzling BBQ grills, and vibrant side dishes.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?q=80&w=800&auto=format&fit=crop" alt="Mexican"/>
+      <div class="card-content">
+        <h3>Mexican Cuisine</h3>
+        <p>Crispy tacos, loaded nachos, and artisanal cocktail pairings.</p>
+      </div>
+    </div>
+
+    <!-- REPEAT FOR SEAMLESS LOOP -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=800&auto=format&fit=crop" alt="Japanese"/>
+      <div class="card-content">
+        <h3>Japanese Cuisine</h3>
+        <p>Sushi, ramen, and omakase experiences rendered with true-to-life textures.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=800&auto=format&fit=crop" alt="Indian"/>
+      <div class="card-content">
+        <h3>Indian Cuisine</h3>
+        <p>Rich curries, tandoori grills, and biryanis presented with volumetric color.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-title">
+    <h2>Turn Your Food Into<br>Interactive Experiences</h2>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature">
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=800&auto=format&fit=crop" alt="Sales">
+      </div>
+      <h3>Boost Average Ticket Size</h3>
+      <p>Visualizing dishes stimulates appetite and drives guests to add premium chef specials and desserts.</p>
+    </div>
+
+    <div class="feature">
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop" alt="No App">
+      </div>
+      <h3>Zero App Installation</h3>
+      <p>Instant camera launch from mobile browsers via simple QR codes on table cards or menus.</p>
+    </div>
+
+    <div class="feature">
+      <div class="feature-media">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop" alt="Analytics">
+      </div>
+      <h3>Customer Heatmap Analytics</h3>
+      <p>Discover which dishes get viewed, rotated, and converted into actual orders in real time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-box">
+    <h2>Bring Your Menu To Life</h2>
+    <p>Get your restaurant onboarded with LiveDish AI. Connect directly with our engineering team on WhatsApp to see a custom live demo.</p>
+
+    <div class="cta-buttons">
+      <a href="https://wa.me/919999999999?text=Hi,%20I%20want%20to%20integrate%20LiveDish%20AI%20for%20my%20restaurant" target="_blank" rel="noopener noreferrer" class="btn-whatsapp">
+        <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        Chat on WhatsApp
+      </a>
+      <a href="getstart.html" class="btn-primary">Get Started Now →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 LiveDish AI — All Rights Reserved. Built for WebAR experiences.
+</footer>
+
+<script>
+const foods = [
+  {
+    emoji:"🍣",
+    name:"Sushi Omakase",
+    price:"₹1290",
+    tags:["🔥 580 kcal","⭐ 4.9","🌿 Fresh","🚫 Gluten-Free"]
+  },
+  {
+    emoji:"🍕",
+    name:"Truffle Pizza",
+    price:"₹890",
+    tags:["🔥 720 kcal","⭐ 4.8","🧀 Cheese","🍄 Mushroom"]
+  },
+  {
+    emoji:"🍔",
+    name:"Smash Burger",
+    price:"₹640",
+    tags:["🔥 950 kcal","⭐ 4.7","🥩 Wagyu","🌶 Spicy"]
+  },
+  {
+    emoji:"🍜",
+    name:"Tonkotsu Ramen",
+    price:"₹540",
+    tags:["🔥 620 kcal","⭐ 4.9","🥚 Soft Egg","🍥 Japanese"]
+  }
+];
+
+let current = 0;
+
+setInterval(()=>{
+  current = (current + 1) % foods.length;
+  const emojiEl = document.getElementById("foodEmoji");
+  const nameEl = document.getElementById("foodName");
+  const priceEl = document.getElementById("priceBtn");
+  const tagsEl = document.getElementById("foodTags");
+
+  if(emojiEl) emojiEl.innerHTML = foods[current].emoji;
+  if(nameEl) nameEl.innerHTML = foods[current].name;
+  if(priceEl) priceEl.innerHTML = `Add to Order — ${foods[current].price}`;
+  if(tagsEl) tagsEl.innerHTML = foods[current].tags.map(tag=>`<span>${tag}</span>`).join('');
+}, 3200);
+
+/* SCROLL REVEAL */
+const features = document.querySelectorAll('.feature');
+const revealFeatures = () => {
+  const triggerBottom = window.innerHeight * 0.9;
+  features.forEach((feature, index) => {
+    const rect = feature.getBoundingClientRect();
+    if(rect.top < triggerBottom){
+      setTimeout(()=>{
+        feature.classList.add('show');
+      }, index * 100);
+    }
+  });
+};
+
+window.addEventListener('scroll', revealFeatures);
+revealFeatures();
+</script>
+
+</body>
+</html>
